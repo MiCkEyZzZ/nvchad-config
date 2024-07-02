@@ -266,7 +266,7 @@ return {
     config = function()
       require("todo-comments").setup()
     end,
-  }, -- To make a plugin not be loaded
+  }, -- сделать так, чтобы плагин не загружался
 
   {
     "Exafunction/codeium.vim",

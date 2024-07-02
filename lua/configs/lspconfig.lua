@@ -6,7 +6,7 @@ local capabilities = configs.capabilities
 
 local lspconfig = require "lspconfig"
 
--- if you just want default config for the servers then put them in a table
+-- если вам просто нужны настройки по умолчанию для серверов, то поместите их в таблицу
 local servers = { "html", "cssls", "tsserver", "clangd", "gopls", "gradle_ls", "tailwindcss" }
 
 local function organize_imports()

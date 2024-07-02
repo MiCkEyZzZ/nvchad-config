@@ -73,7 +73,7 @@ M.mason = {
   },
 }
 
--- git support in nvimtree
+-- поддержка git в nvimtree
 M.nvimtree = {
   git = {
     enable = true,
