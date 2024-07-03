@@ -15,7 +15,8 @@ map("n", "<c-h>", "<cmd>:TmuxNavigateLeft<cr>", { desc = "Tmux Left" })
 map("n", "<c-k>", "<cmd>:TmuxNavigateUp<cr>", { desc = "Tmux Up" })
 map("n", "<c-j>", "<cmd>:TmuxNavigateDown<cr>", { desc = "Tmux Down" })
 
--- Неприятность
+-- Trouble
+
 map("n", "<leader>qx", "<cmd>TroubleToggle<CR>", { desc = "Open Trouble" })
 map("n", "<leader>qw", "<cmd>TroubleToggle workspace_diagnostics<CR>", { desc = "Open Workspace Trouble" })
 map("n", "<leader>qd", "<cmd>TroubleToggle document_diagnostics<CR>", { desc = "Open Document Trouble" })
@@ -23,7 +24,7 @@ map("n", "<leader>qq", "<cmd>TroubleToggle quickfix<CR>", { desc = "Open Quickfi
 map("n", "<leader>ql", "<cmd>TroubleToggle loclist<CR>", { desc = "Open Location List" })
 map("n", "<leader>qt", "<cmd>TodoTrouble<CR>", { desc = "Open Todo Trouble" })
 
--- Тесты
+-- Tests
 map("n", "<leader>tt", function()
   require("neotest").run.run()
 end, { desc = "Run nearest test" })
@@ -33,7 +34,7 @@ end, { desc = "Run file test" })
 map("n", "<leader>to", ":Neotest output<CR>", { desc = "Show test output" })
 map("n", "<leader>ts", ":Neotest summary<CR>", { desc = "Show test summary" })
 
--- Отладка
+-- Debug
 map("n", "<leader>du", function()
   require("dapui").toggle()
 end, { desc = "Toggle Debug UI" })
@@ -53,7 +54,7 @@ map("n", "<leader>gf", ":DiffviewFileHistory<CR>", { desc = "Git File History" }
 map("n", "<leader>gc", ":DiffviewOpen HEAD~1<CR>", { desc = "Git Last Commit" })
 map("n", "<leader>gt", ":DiffviewToggleFile<CR>", { desc = "Git File History" })
 
--- Терминал
+-- Terminal
 map("n", "<C-]>", function()
   require("nvchad.term").toggle { pos = "vsp", size = 0.4 }
 end, { desc = "Toogle Terminal Vertical" })
@@ -73,7 +74,7 @@ map("t", "<C-f>", function()
   require("nvchad.term").toggle { pos = "float" }
 end, { desc = "Toogle Terminal Float" })
 
--- базовый
+-- Basic
 
 map("i", "jj", "<ESC>")
 map("i", "<C-g>", function()

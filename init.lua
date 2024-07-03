@@ -4,9 +4,25 @@ local opt = vim.opt
 
 opt.encoding = "utf-8"
 opt.fileencoding = "utf-8"
-
+opt.title = true
+opt.autoindent = true
+opt.hlsearch = true
 opt.backup = false
 opt.swapfile = false
+opt.showcmd = true
+opt.cmdheight = 1
+opt.laststatus = 2
+opt.expandtab = true
+opt.scrolloff = 10
+opt.shell = 'zsh'
+opt.inccommand = 'split'
+opt.ignorecase = true
+opt.smarttab = true
+opt.breakindent = true
+opt.shiftwidth = 2
+opt.tabstop = 2
+opt.wrap = false -- никаких линий переноса
+opt.wildignore:append { '*/node_modules/*' }
 
 -- bootstrap lazy и все плагины
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"

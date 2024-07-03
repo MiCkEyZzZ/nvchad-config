@@ -1,4 +1,4 @@
-local configs = require("nvchad.configs.lspconfig")
+local configs = require "nvchad.configs.lspconfig"
 
 local on_attach = configs.on_attach
 local on_init = configs.on_init
@@ -6,7 +6,7 @@ local capabilities = configs.capabilities
 
 local lspconfig = require "lspconfig"
 
--- если вам просто нужны настройки по умолчанию для серверов, то поместите их в таблицу
+-- if you just want default config for the servers then put them in a table
 local servers = { "html", "cssls", "tsserver", "clangd", "gopls", "gradle_ls", "tailwindcss" }
 
 local function organize_imports()
@@ -29,13 +29,16 @@ for _, lsp in ipairs(servers) do
     },
     settings = {
       gopls = {
+        experimentalPostfixCompletions = true,
         completeUnimported = true,
         usePlaceholders = true,
         analyses = {
           unusedparams = true,
-        }
-      }
-    }
+          shadow = true,
+        },
+        staticcheck = true,
+      },
+    },
   }
   lspconfig.prismals.setup {}
 end

@@ -45,6 +45,8 @@ return {
         "css-lsp",
         "prettier",
         "eslint-lsp",
+        "clangd",
+        "clang-format",
         "gopls",
         "js-debug-adapter",
         "typescript-language-server",
@@ -64,6 +66,7 @@ return {
         "typescript",
         "javascript",
         "go",
+        "c",
       },
     },
   },
@@ -87,7 +90,14 @@ return {
     "windwp/nvim-ts-autotag",
     event = "VeryLazy",
     config = function()
-      require("nvim-ts-autotag").setup()
+      require("nvim-ts-autotag").setup {
+        opts = {
+          -- Значения по умолчанию
+          enable_close = true, -- Автоматическое закрытие тегов
+          enable_rename = true, -- Автоматическое переименование пар тегов
+          enable_close_on_slash = false, -- Автоматическое закрытие при замыкании </
+        },
+      }
     end,
   },
 
@@ -116,6 +126,8 @@ return {
     end,
   },
 
+  -- плавная прокрутка при скролинге
+  -- подробнее смотри: https://github.com/karb94/neoscroll.nvim
   {
     "karb94/neoscroll.nvim",
     event = "BufReadPost",
@@ -124,11 +136,15 @@ return {
     end,
   },
 
+  -- плагин связан с манипуляцией ковычками, скобками. Позволяет удалять, изменять и добавлять
+  -- подробнее смотри: https://github.com/tpope/vim-surround
   {
     "tpope/vim-surround",
     event = "BufReadPost",
   },
 
+  -- плагин с несколькими курсорами для vim/neovim
+  -- подробнее смотри: https://github.com/mg979/vim-visual-multi
   {
     "mg979/vim-visual-multi",
     event = "BufReadPost",
@@ -147,7 +163,7 @@ return {
             jestCommand = "npm test --",
             jestConfigFile = "jest.config.ts",
             env = { CI = true },
-            cwd = function(path)
+            cwd = function()
               return vim.fn.getcwd()
             end,
           },
@@ -192,13 +208,13 @@ return {
   },
 
   {
-    'razak17/tailwind-fold.nvim',
+    "razak17/tailwind-fold.nvim",
     opts = {},
-    dependencies = {'nvim-treesitter/nvim-treesitter'},
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     event = "VeryLazy",
     config = function()
-        require('tailwind-fold').setup({ft = {'html', 'twig'}})
-    end
+      require("tailwind-fold").setup { ft = { "html", "twig" } }
+    end,
   },
 
   {
@@ -253,12 +269,17 @@ return {
     lazy = false,
   },
 
+  -- плагин показывает ошибки в коде
+  -- подробнее смотри: https://github.com/folke/trouble.nvim
   {
     "folke/trouble.nvim",
     lazy = false,
     dependencies = { "nvim-tree/nvim-web-devicons" },
   },
 
+  -- пдагин предназначен для выделения и поиска комментариев к задачам,
+  -- таких как TODO, ВЗЛОМ, ОШИБКА в вашей кодовой базе
+  -- подробнее смотри: https://github.com/folke/todo-comments.nvim
   {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -266,10 +287,38 @@ return {
     config = function()
       require("todo-comments").setup()
     end,
-  }, -- сделать так, чтобы плагин не загружался
+  }, -- чтобы плагин не загружался
 
+  -- нативный плагин Codeium для Neovim.
+  -- подробнее смотри: https://github.com/Exafunction/codeium.nvim
   {
     "Exafunction/codeium.vim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+    },
     lazy = false,
+  },
+
+  -- плагин позволяет быстро выделять любой фрагмент кода и создать красивый снимок кода
+  -- прямо из терминала. Включить режим выделения можно нажав на клавишу v после этого
+  -- перемещаясь стрелками по необходимой области кода.
+  -- подробнее смотри: https://github.com/ellisonleao/carbon-now.nvim
+  {
+    "ellisonleao/carbon-now.nvim",
+    lazy = true,
+    cmd = "CarbonNow",
+    opts = {},
+  },
+
+  -- невероятно быстрая и простая в настройке строка состояния Neovim, написанная на Lua.
+  -- подробнее смотри: https://github.com/nvim-lualine/lualine.nvim
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "BufReadPost",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require "configs.lualine"
+    end,
   },
 }

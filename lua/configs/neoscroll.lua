@@ -5,7 +5,7 @@ if not present then
 end
 
 neoscroll.setup {
-  -- Все эти клавиши будут сопоставлены с соответствующей им анимацией прокрутки по умолчанию
+  -- All these keys will be mapped to their corresponding default scrolling animation
   mappings = {
     "<C-u>",
     "<C-d>",
@@ -17,12 +17,12 @@ neoscroll.setup {
     "zz",
     "zb",
   },
-  hide_cursor = true, -- скрытие курсора при прокрутке
-  stop_eof = true, -- остановка на <EOF> при прокрутке вниз
-  use_local_scrolloff = false, -- используйте локальную область scrolloff вместо глобальной области
-  respect_scrolloff = false, -- остановка прокрутки, когда курсор достигнет границы прокрутки файла
-  cursor_scrolls_alone = true, -- курсор будет продолжать прокручиваться, даже если окно не сможет прокручиваться дальше
-  easing_function = nil, -- по умолчанию easing function
-  pre_hook = nil, -- функция, запускаемая перед запуском анимации прокрутки
-  post_hook = nil, -- функция, запускаемая после завершения анимации прокрутки
+  hide_cursor = true, -- Hide cursor while scrolling
+  stop_eof = true, -- Stop at <EOF> when scrolling downwards
+  use_local_scrolloff = false, -- Use the local scope of scrolloff instead of the global scope
+  respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+  cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
+  easing_function = nil, -- Default easing function
+  pre_hook = nil, -- Function to run before the scrolling animation starts
+  post_hook = nil, -- Function to run after the scrolling animation ends
 }
