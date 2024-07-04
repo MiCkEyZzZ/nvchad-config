@@ -5,7 +5,7 @@
 local M = {}
 
 M.ui = {
-	theme = "github_dark",
+	theme = "github_light",
   theme_toggle = { "github_dark", "github_light" },
   transparency = false,
   load_on_startup = true,

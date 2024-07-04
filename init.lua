@@ -14,15 +14,15 @@ opt.cmdheight = 1
 opt.laststatus = 2
 opt.expandtab = true
 opt.scrolloff = 10
-opt.shell = 'zsh'
-opt.inccommand = 'split'
+opt.shell = "zsh"
+opt.inccommand = "split"
 opt.ignorecase = true
 opt.smarttab = true
 opt.breakindent = true
 opt.shiftwidth = 2
 opt.tabstop = 2
 opt.wrap = false -- никаких линий переноса
-opt.wildignore:append { '*/node_modules/*' }
+opt.wildignore:append { "*/node_modules/*" }
 
 -- bootstrap lazy и все плагины
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
@@ -36,7 +36,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require "configs.lazy"
 
--- загрузка плагины
+-- загрузка плагинов
 require("lazy").setup({
   {
     "NvChad/NvChad",
@@ -51,7 +51,7 @@ require("lazy").setup({
   { import = "plugins" },
 }, lazy_config)
 
--- загрузка тему
+-- загрузка темы
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
 
