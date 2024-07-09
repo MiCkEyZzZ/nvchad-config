@@ -5,6 +5,11 @@
 </p>
 </br>
 
+## Я использую
+
+- [ubuntu 24.04LTS](https://ubuntu.com/download/desktop)
+- [wrap](https://www.warp.dev/)
+
 ## Основные команды
 
 - `ctr + n` - открыть/закрыть Nvchad меню
