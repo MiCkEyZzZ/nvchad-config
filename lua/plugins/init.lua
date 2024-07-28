@@ -38,6 +38,29 @@ return {
     end,
   },
 
+  {
+    "ray-x/go.nvim",
+    dependencies = { -- opti onal packages
+      "ray-x/guihua.lua",
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("go").setup {
+        go = "go",
+        gofmt = "gofumpt", -- Если хотите использовать gofmt, установите значение "gofmt"
+        fillstruct = "gopls",
+        tag_transform = false,
+        test_dir = "",
+        comment_placeholder = "",
+        verbose = false,
+      }
+    end,
+    event = { "CmdlineEnter" },
+    ft = { "go", "gomod" },
+    build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+  },
+
   -- библиотека для асинхронного ввода-вывода в Neovim, созданная на основе библиотеки asyncio в Python.
   -- Библиотека ориентирована на предоставление как обычных асинхронных примитивов, так и асинхронных API для ядра Neovim.
   -- подробнее смотри:  https://github.com/nvim-neotest/neotest
