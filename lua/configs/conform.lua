@@ -16,7 +16,8 @@ local options = {
     gosum = { "goimports" },
     gowork = { "goimports" },
     thrift = { "thrift" },
-    proto = { "buf" },
+    c = { "clang-format" },
+    cpp = { "clang-format" },
   },
 
   format_on_save = {

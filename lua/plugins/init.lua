@@ -1,4 +1,6 @@
 return {
+  -- лёгкий, но мощный модуль форматирования для Neovim.
+  -- подробнее смотри: https://github.com/prettier/vim-prettier
   {
     "stevearc/conform.nvim",
     event = "BufWritePre",
@@ -20,7 +22,8 @@ return {
       "TmuxNavigatePrevious",
     },
   },
-
+  -- плагин для удобного взаимодействия с окнами
+  -- подробнее смотри: https://github.com/stevearc/dressing.nvim
   {
     "stevearc/dressing.nvim",
     lazy = false,
@@ -61,6 +64,7 @@ return {
         "yamlls",
         "jsonls",
         "marksman",
+        "protols",
       },
     },
   },
@@ -70,23 +74,35 @@ return {
   -- подробнее смотри: https://github.com/nvim-treesitter/nvim-treesitter
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
-        "vim",
-        "lua",
-        "vimdoc",
-        "html",
-        "css",
-        "typescript",
-        "javascript",
-        "go",
-        "c",
-        "cpp",
-        "json",
-        "yaml",
-        "markdown",
-      },
-    },
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup {
+        ensure_installed = {
+          "vim",
+          "lua",
+          "vimdoc",
+          "html",
+          "css",
+          "typescript",
+          "javascript",
+          "go",
+          "c",
+          "cpp",
+          "json",
+          "yaml",
+          "markdown",
+          "rust",
+          "proto",
+          "prisma",
+          "sql",
+          "toml",
+          "json",
+          "ruby",
+        },
+        sync_install = false,
+        auto_install = true,
+        highlight = { enable = true },
+      }
+    end,
   },
 
   -- асинхронный плагин linter для Neovim, дополняющий встроенную поддержку протокола языкового сервера.
@@ -96,13 +112,6 @@ return {
     event = "VeryLazy",
     config = function()
       require "configs.lint"
-    end,
-  },
-
-  {
-    "neovim/nvim-lspconfig",
-    config = function()
-      require "configs.lspconfig"
     end,
   },
 
@@ -207,6 +216,8 @@ return {
     },
   },
 
+  -- настройка DAP для нативного дебаггера
+  -- подробнее смотри: https://github.com/mfussenegger/nvim-dap
   {
     "mfussenegger/nvim-dap",
     config = function()
@@ -236,6 +247,7 @@ return {
     },
   },
 
+  -- поддержка Tailwind CSS в NeoVim
   {
     "razak17/tailwind-fold.nvim",
     opts = {},
@@ -246,6 +258,8 @@ return {
     end,
   },
 
+  -- интерфейс для DAP (нативный дебаггер)
+  -- подробнее смотри: https://github.com/rcarriga/nvim-dap-ui
   {
     "rcarriga/nvim-dap-ui",
     config = function()
@@ -268,6 +282,7 @@ return {
     },
   },
 
+  -- поддержка neodev для упрощения разработки
   {
     "folke/neodev.nvim",
     config = function()
@@ -348,6 +363,47 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require "configs.lualine"
+    end,
+  },
+
+  -- одна из темных тем для Neovim, вдохновленных Solarized, написанная на Lua.
+  -- подробнее смотри: https://github.com/craftzdog/solarized-osaka.nvim?tab=readme-ov-file
+  {
+    "craftzdog/solarized-osaka.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = function()
+      return {
+        transparent = true,
+      }
+    end,
+  },
+
+  -- плагин показывает подсказки в виде всплывающих подсказок
+  -- подробнее смотри: https://github.com/ray-x/lsp_signature.nvim
+  {
+    "ray-x/lsp_signature.nvim",
+    event = "VeryLazy",
+    opts = {},
+    config = function(_, opts)
+      require("lsp_signature").setup(opts)
+    end,
+  },
+  -- автодополнения с выбором элементов с помощью стрелок
+  -- Подробности: https://github.com/hrsh7th/nvim-cmp
+  {
+    "hrsh7th/nvim-cmp",
+    event = "InsertEnter",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip",
+    },
+    config = function()
+      require "configs.cmp"
     end,
   },
 }

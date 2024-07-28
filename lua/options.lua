@@ -6,7 +6,6 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
--- add yours here!
-
+-- добавляйте свои сюда!
 -- local o = vim.o
--- o.cursorlineopt ='both' -- to enable cursorline!
+-- o.cursorlineopt ='both' -- чтобы включить cursorline!

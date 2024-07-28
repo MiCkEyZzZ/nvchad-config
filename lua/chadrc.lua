@@ -5,30 +5,31 @@
 local M = {}
 
 M.ui = {
-	theme = "github_light",
-  theme_toggle = { "github_dark", "github_light" },
+  theme = "github_light",
+  theme_toggle = { "catppuccin", "github_light" },
   transparency = false,
   load_on_startup = true,
   -- Чтобы соответствовать nvim-tree
   tabufline = {
-		order = { "buffers", "tabs", "btns" }, -- Добавьте «treeOffset», если вы не используете nvimTreeee в качестве всплывающего окна.
-	},
-  term = {
-		-- hl = "Обычный:term,WinSeparator:WinSeparator",
-		-- sizes = { sp = 0.3, vsp = 0.2 },
-		float = {
-			relative = "editor",
-			row = 0.1,
-			col = 0.045,
-			width = 0.9,
-			height = 0.8,
-			border = "single",
-		},
-	},
-	statusline = {
-    theme = "vscode_colored",
+    order = { "buffers", "tabs", "btns" }, -- Добавьте «treeOffset», если вы не используете nvimTreeee в качестве всплывающего окна.
   },
-	nvdash = {
+  term = {
+    -- hl = "Обычный:term,WinSeparator:WinSeparator",
+    -- sizes = { sp = 0.3, vsp = 0.2 },
+    float = {
+      relative = "editor",
+      row = 0.1,
+      col = 0.045,
+      width = 0.9,
+      height = 0.8,
+      border = "single",
+    },
+  },
+  statusline = {
+    theme = "vscode_colored",
+    separator_style = "round",
+  },
+  nvdash = {
     load_on_startup = true,
     header = {
       [[                                           /$$   /$$                ]],
@@ -43,19 +44,23 @@ M.ui = {
       [[                                                                    ]],
     },
 
+    -- Установка меню
     buttons = {
-      { "  Найти файл", "Spc f f", "Telescope find_files" },
-      { "󰈚  Последние файлы", "Spc f o", "Telescope oldfiles" },
-      { "󰈭  Найти по слову", "Spc f w", "Telescope live_grep" },
-      { "  Закладки", "Spc m a", "Telescope marks" },
-      { "  Темы", "Spc t h", "Telescope themes" },
-      { "  Управление", "Spc c h", "NvCheatsheet" },
+      { "  Найти файл", "Проб f f", "Telescope find_files" },
+      { "󰈚  Последние файлы", "Проб f o", "Telescope oldfiles" },
+      { "󰈭  Найти по слову", "Проб f w", "Telescope live_grep" },
+      { "  Закладки", "Проб m a", "Telescope marks" },
+      { "  Темы", "Проб t h", "Telescope themes" },
+      { "  Управление", "Проб c h", "NvCheatsheet" },
     },
   },
   -- просто/сетка
-  cheatsheet = { theme = "grid" },
+  cheatsheet = { theme = "grid" }, -- простая/сетка
 
-	hl_override = {
+  telescope = { style = "bordered" },
+  extended_integrations = { "notify" },
+
+  hl_override = {
     Comment = { italic = true },
     ["@comment"] = { italic = true },
     DiffChange = {

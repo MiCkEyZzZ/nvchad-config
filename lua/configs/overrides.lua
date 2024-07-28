@@ -23,6 +23,7 @@ M.treesitter = {
     "proto",
     "json",
     "yaml",
+    "proto",
   },
   textobjects = {
     select = {
@@ -69,11 +70,12 @@ M.mason = {
     "goimports",
     "gradle_ls",
     "shfmt",
-    "shellcheck"
+    "shellcheck",
+    "protols",
   },
 }
 
--- git support in nvimtree
+-- поддержка git в nvimtree
 M.nvimtree = {
   git = {
     enable = true,

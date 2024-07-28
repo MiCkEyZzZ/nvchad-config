@@ -43,6 +43,7 @@ require("lazy").setup({
     lazy = false,
     branch = "v2.5",
     import = "nvchad.plugins",
+    opts = { colorscheme = "solarized_osaka" },
     config = function()
       require "options"
     end,

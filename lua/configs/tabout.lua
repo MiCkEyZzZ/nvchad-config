@@ -5,14 +5,14 @@ if not present then
 end
 
 tabout.setup {
-  tabkey = "<Tab>", -- key to trigger tabout, set to an empty string to disable
-  backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout, set to an empty string to disable
-  act_as_tab = true, -- shift content if tab out is not possible
-  act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
-  default_tab = "<C-t>", -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
-  default_shift_tab = "<C-d>", -- reverse shift default action,
+  tabkey = "<Tab>", -- клавиша для запуска табуляции, установленная в пустую строку для отключения
+  backwards_tabkey = "<S-Tab>", -- клавиша для запуска обратной вкладки поддержки git в nvimtree, установленная в пустую строку для отключения
+  act_as_tab = true, -- переместить содержимое, если выход из табуляции невозможен
+  act_as_shift_tab = false, -- переключение содержимого в обратном порядке, если использование tab out невозможно (если ваша клавиатура / терминал поддерживает <S-Tab>)
+  default_tab = "<C-t>", -- сдвинуть действие по умолчанию (только в начале строки, в противном случае используется <ТАБУЛЯЦИЯ>)
+  default_shift_tab = "<C-d>", -- действие обратного сдвига по умолчанию
   enable_backwards = true, -- well ...
-  completion = true, -- if the tabkey is used in a completion pum
+  completion = true, -- если клавиша tab используется в pum завершения
   tabouts = {
     { open = "'", close = "'" },
     { open = '"', close = '"' },
@@ -21,6 +21,6 @@ tabout.setup {
     { open = "[", close = "]" },
     { open = "{", close = "}" },
   },
-  ignore_beginning = false, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
-  exclude = {}, -- tabout will ignore these filetypes
+  ignore_beginning = false, --[[ если курсор находится в начале заполненного элемента, он скорее уберет табуляцию, чем переместит содержимое ]]
+  exclude = {}, -- tabout будет игнорировать эти типы файлов
 }
