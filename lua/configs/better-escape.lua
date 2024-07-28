@@ -4,6 +4,8 @@ if not present then
   return
 end
 
+vim.o.timeoutlen = 300 -- устанавливаем таймаут на 300 мс, если не установлен
+
 better_escape.setup {
   mapping = { "jk", "jj" }, -- таблица с отображениями для использования
   timeout = vim.o.timeoutlen, -- время, в течение которого должны быть нажаты клавиши, указывается в мс.

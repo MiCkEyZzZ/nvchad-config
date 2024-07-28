@@ -72,6 +72,9 @@ M.mason = {
     "shfmt",
     "shellcheck",
     "protols",
+    "pyright",
+    "solargraph",
+    "sqls",
   },
 }
 
@@ -88,6 +91,10 @@ M.nvimtree = {
         git = true,
       },
     },
+    special_files = { "README.md", "Makefile", "MAKEFILE", "Cargo.toml", "build.gradle" }, -- Список специальных файлов, которые всегда находятся наверху
+  },
+  view = {
+    adaptive_size = true, -- изменяет размер окна в зависимости от количества файлов
   },
 }
 
