@@ -1,12 +1,12 @@
 # Конфигурация Nvchad версии 2.5
 
 <p align="center">
-  <img src="image.png">
+  <img src="images/img-1.png">
 </p>
 </br>
 
 <p align="center">
-  <img src="image-1.png">
+  <img src="images/img-2.png">
 </p>
 </br>
 
