@@ -5,6 +5,7 @@ local map = vim.keymap.set
 -- Переключение в командный режим
 map("n", ";", ":", { desc = "CMD переход в командный режим" })
 map("n", "<leader>w", "<cmd>w<CR>", { desc = "Сохранить" })
+
 -- Управление буферами
 map("n", "<leader>cx", function()
   require("nvchad.tabufline").closeAllBufs()
