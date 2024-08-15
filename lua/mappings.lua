@@ -120,3 +120,7 @@ map("i", "jj", "<ESC>", { desc = "Выход из режима вставки" }
 map("i", "<C-g>", function()
   return vim.fn["codeium#Accept"]()
 end, { expr = true, desc = "Принять предложение Codeium" })
+
+-- предварительного просмотра Markdown
+map("n", "<leader>mp", "<CMD> MarkdownPreview<CR>", { desc = "Open Preview" })
+map("n", "<leader>mc", "<CMD> MarkdownPreviewStop<CR>", { desc = "Close Preview" })
