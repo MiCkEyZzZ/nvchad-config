@@ -467,4 +467,13 @@ return {
       vim.g.mkdp_theme = "dark"
     end,
   },
+  -- Простая и быстрая полоса прокрутки для Neovim. Она намеренно лишена каких-либо особенностей и останется таковой.
+  -- подробнее смотри: https://github.com/ojroques/nvim-scrollbar
+  {
+    "ojroques/nvim-scrollbar",
+    event = "BufReadPost",
+    config = function()
+      require("scrollbar").setup {}
+    end,
+  },
 }
