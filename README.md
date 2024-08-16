@@ -5,11 +5,6 @@
 </p>
 </br>
 
-<p align="center">
-  <img src="images/img-2.png">
-</p>
-</br>
-
 ## Я использую
 
 - [ubuntu 24.04LTS](https://ubuntu.com/download/desktop)
