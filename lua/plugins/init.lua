@@ -582,4 +582,13 @@ return {
       require("scrollbar").setup {}
     end,
   },
+  -- Плагин neovim для создания файлов .gitignore за считанные секунды,
+  -- позволяющий вам выбирать из огромного количества различных технологий.
+  -- подробнее смотри: https://github.com/wintermute-cell/gitignore.nvim
+  {
+    "wintermute-cell/gitignore.nvim",
+    config = function()
+      require "gitignore"
+    end,
+  },
 }

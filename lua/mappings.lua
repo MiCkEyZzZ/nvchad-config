@@ -5,7 +5,6 @@ local map = vim.keymap.set
 -- Переключение в командный режим
 map("n", ";", ":", { desc = "CMD переход в командный режим" })
 map("n", "<leader>w", "<cmd>w<CR>", { desc = "Сохранить" })
-
 -- Управление буферами
 map("n", "<leader>cx", function()
   require("nvchad.tabufline").closeAllBufs()
@@ -25,8 +24,18 @@ map("n", "<c-j>", "<cmd>:TmuxNavigateDown<cr>", { desc = "Tmux Вниз" })
 
 -- Trouble
 map("n", "<leader>qx", "<cmd>TroubleToggle<CR>", { desc = "Открыть Проблема" })
-map("n", "<leader>qw", "<cmd>TroubleToggle workspace_diagnostics<CR>", { desc = "Открыть Workspace Trouble" })
-map("n", "<leader>qd", "<cmd>TroubleToggle document_diagnostics<CR>", { desc = "Открыть Document Trouble" })
+map(
+  "n",
+  "<leader>qw",
+  "<cmd>TroubleToggle workspace_diagnostics<CR>",
+  { desc = "Открыть Workspace Trouble" }
+)
+map(
+  "n",
+  "<leader>qd",
+  "<cmd>TroubleToggle document_diagnostics<CR>",
+  { desc = "Открыть Document Trouble" }
+)
 map("n", "<leader>qq", "<cmd>TroubleToggle quickfix<CR>", { desc = "Открыть Quickfix" })
 map(
   "n",
@@ -47,7 +56,12 @@ map(
 map("n", "<leader>fw", "<cmd>Telescope live_grep<CR>", { desc = "Живой grep" })
 map("n", "<leader>fb", "<cmd>Telescope buffers<CR>", { desc = "Найти Буферы" })
 map("n", "<leader>fh", "<cmd>Telescope help_tags<CR>", { desc = "Найти Помощь" })
-map("n", "<leader>fo", "<cmd>Telescope oldfiles<CR>", { desc = "Найти Предыдущие файлы" })
+map(
+  "n",
+  "<leader>fo",
+  "<cmd>Telescope oldfiles<CR>",
+  { desc = "Найти Предыдущие файлы" }
+)
 map(
   "n",
   "<leader>fk",
@@ -92,8 +106,18 @@ end, { desc = "Step Over" })
 -- Git
 map("n", "<leader>gl", ":Flog<CR>", { desc = "Git Журнал" })
 map("n", "<leader>gf", ":DiffviewFileHistory<CR>", { desc = "Git История файлов" })
-map("n", "<leader>gc", ":DiffviewOpen HEAD~1<CR>", { desc = "Git Последняя фиксация" })
-map("n", "<leader>gt", ":DiffviewToggleFile<CR>", { desc = "Git История изменений файла" })
+map(
+  "n",
+  "<leader>gc",
+  ":DiffviewOpen HEAD~1<CR>",
+  { desc = "Git Последняя фиксация" }
+)
+map(
+  "n",
+  "<leader>gt",
+  ":DiffviewToggleFile<CR>",
+  { desc = "Git История изменений файла" }
+)
 
 -- Терминал
 map("n", "<C-]>", function()
@@ -121,6 +145,16 @@ map("i", "<C-g>", function()
   return vim.fn["codeium#Accept"]()
 end, { expr = true, desc = "Принять предложение Codeium" })
 
--- предварительного просмотра Markdown
-map("n", "<leader>mp", "<CMD> MarkdownPreview<CR>", { desc = "Open Preview" })
-map("n", "<leader>mc", "<CMD> MarkdownPreviewStop<CR>", { desc = "Close Preview" })
+-- mapping for Markdown Preview
+map(
+  "n",
+  "<leader>mp",
+  "<CMD> MarkdownPreview<CR>",
+  { desc = "Открыть предпросмотр" }
+)
+map(
+  "n",
+  "<leader>mc",
+  "<CMD> MarkdownPreviewStop<CR>",
+  { desc = "Закрыть предпросмотр" }
+)

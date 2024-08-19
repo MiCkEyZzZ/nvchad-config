@@ -5,8 +5,8 @@
 local M = {}
 
 M.ui = {
-  theme = "catppuccin",
-  theme_toggle = { "catppuccin", "github_light", "nord", "tokyonight" },
+  theme = "github_dark",
+  theme_toggle = { "github_dark", "github_light", "nord", "tokyonight" },
   transparency = false,
   load_on_startup = true,
   -- Чтобы соответствовать nvim-tree
@@ -24,7 +24,7 @@ M.ui = {
       row = 0.1,
       col = 0.045,
       width = 0.9,
-      height = 0.8,
+      height = 0.9,
       border = "single",
     },
   },

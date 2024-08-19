@@ -35,8 +35,8 @@ require("conform").setup(options)
 -- Проверка установленных фоматтеров и установить отсутствующие
 local function ensure_formatter_Installed(formatter)
   local handle = io.popen("command -v " .. formatter)
-  -- возвращаем false, если форматтер не установлен
-  if handle == nil then
+  -- если форматтер не установлен, вернуть false
+  if not handle then
     return false
   end
   local result = handle:read "*a"
