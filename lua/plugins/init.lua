@@ -90,6 +90,10 @@ return {
         "jsonls",
         "marksman",
         "protols",
+        "pyright",
+        "mypy",
+        "ruff",
+        "black",
       },
     },
   },
@@ -144,7 +148,6 @@ return {
   -- подробнее смотри: https://github.com/windwp/nvim-ts-autotag
   {
     "windwp/nvim-ts-autotag",
-    event = "VeryLazy",
     config = function()
       require("nvim-ts-autotag").setup {
         opts = {
@@ -152,6 +155,11 @@ return {
           enable_close = true, -- Автоматическое закрытие тегов
           enable_rename = true, -- Автоматическое переименование пар тегов
           enable_close_on_slash = false, -- Автоматическое закрытие при замыкании </
+        },
+        per_filetype = {
+          ["html"] = {
+            enable_close = false,
+          },
         },
       }
     end,
@@ -582,13 +590,256 @@ return {
       require("scrollbar").setup {}
     end,
   },
-  -- Плагин neovim для создания файлов .gitignore за считанные секунды,
+  -- плагин neovim для создания файлов .gitignore за считанные секунды,
   -- позволяющий вам выбирать из огромного количества различных технологий.
   -- подробнее смотри: https://github.com/wintermute-cell/gitignore.nvim
   {
     "wintermute-cell/gitignore.nvim",
     config = function()
       require "gitignore"
+    end,
+  },
+  -- nvim-ufo - плагин для управления видимостью блоков
+  -- подробнее смотри: https://github.com/kevinhwang91/nvim-ufo
+  {
+    "kevinhwang91/nvim-ufo",
+    event = "BufReadPost",
+    dependencies = {
+      "kevinhwang91/promise-async",
+      {
+        "luukvbaal/statuscol.nvim",
+        config = function()
+          local builtin = require "statuscol.builtin"
+          require("statuscol").setup {
+            relculright = true,
+            segments = {
+              { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+              { text = { "%s" }, click = "v:lua.ScSa" },
+              { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
+            },
+          }
+        end,
+      },
+    },
+    opts = {
+      -- INFO: Uncomment to use treeitter as fold provider, otherwise nvim lsp is used
+      provider_selector = function(bufnr, filetype, buftype)
+        return { "treesitter", "indent" }
+      end,
+      open_fold_hl_timeout = 400,
+      close_fold_kinds_for_ft = {
+        -- "imports",
+        -- "comment",
+      },
+      preview = {
+        win_config = {
+          border = { "", "─", "", "", "", "─", "", "" },
+          -- winhighlight = "Normal:Folded",
+          winblend = 0,
+        },
+        mappings = {
+          scrollU = "<C-u>",
+          scrollD = "<C-d>",
+          jumpTop = "[",
+          jumpBot = "]",
+        },
+      },
+    },
+    init = function()
+      vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+      vim.o.foldcolumn = "1" -- '0' это не так уж плохо
+      vim.o.foldlevel = 900 -- При использовании ufo provider требуется большое значение, не стесняйтесь уменьшать значение
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = false
+    end,
+    config = function(_, opts)
+      local handler = function(virtText, lnum, endLnum, width, truncate)
+        local newVirtText = {}
+        local totalLines = vim.api.nvim_buf_line_count(0)
+        local foldedLines = endLnum - lnum
+        local suffix = (" 󰁂 %d %d%%"):format(foldedLines, foldedLines / totalLines * 100)
+        local sufWidth = vim.fn.strdisplaywidth(suffix)
+        local targetWidth = width - sufWidth
+        local curWidth = 0
+        for _, chunk in ipairs(virtText) do
+          local chunkText = chunk[1]
+          local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+          if targetWidth > curWidth + chunkWidth then
+            table.insert(newVirtText, chunk)
+          else
+            chunkText = truncate(chunkText, targetWidth - curWidth)
+            local hlGroup = chunk[2]
+            table.insert(newVirtText, { chunkText, hlGroup })
+            chunkWidth = vim.fn.strdisplaywidth(chunkText)
+            if curWidth + chunkWidth < targetWidth then
+              suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
+            end
+            break
+          end
+          curWidth = curWidth + chunkWidth
+        end
+
+        local nvimWidth = vim.api.nvim_win_get_width(0)
+
+        local rAlignAppndx = math.max(math.min(nvimWidth, width - 2) - curWidth - sufWidth, 0)
+        suffix = " " .. ("━"):rep(rAlignAppndx) .. suffix
+        table.insert(newVirtText, { suffix, "MoreMsg" })
+        return newVirtText
+      end
+      opts["fold_virt_text_handler"] = handler
+      require("ufo").setup(opts)
+      vim.keymap.set("n", "zR", require("ufo").openAllFolds)
+      vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
+      vim.keymap.set("n", "zr", require("ufo").openFoldsExceptKinds)
+      vim.keymap.set("n", "zK", function()
+        local winid = require("ufo").peekFoldedLinesUnderCursor()
+        if not winid then
+          -- vim.lsp.buf.hover()
+          vim.cmd [[ Lspsaga hover_doc ]]
+        end
+      end)
+    end,
+  },
+  -- очень экспериментальный плагин, который полностью заменяет пользовательский интерфейс для сообщений,
+  -- командной строки и всплывающего меню.
+  -- подробнее смотри: https://github.com/folke/noice.nvim?ysclid=m08hkqwulh979062613
+  {
+    "folke/noice.nvim",
+    dependencies = {
+      -- если вы не хотите загружать какой-либо плагин, приведенный ниже, не забудьте добавить соответствующие
+      -- записи "module="...""
+      "MunifTanjim/nui.nvim",
+      -- ОПЦИОНАЛЬНО:
+      --   `nvim-notify` это необходимо только в том случае, если вы хотите использовать режим просмотра уведомлений.
+      --   если он недоступен, мы используем "mini" в качестве запасного варианта
+      "rcarriga/nvim-notify",
+    },
+    opts = {
+      -- add any options here
+      -- lsp = {
+      --   signature = {
+      --     enable = false,
+      --   },
+      -- },
+    },
+    event = "VeryLazy",
+    config = function()
+      require("noice").setup {
+        lsp = {
+          -- переопределите рендеринг markdown, чтобы ** cmp** и другие плагины использовали **Tree sitter.**
+          override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true, -- требуется hrsh7th/nvim-cmp
+          },
+          hover = { enabled = false }, -- <-- HERE!
+          signature = { enabled = false }, -- <-- HERE!
+        },
+        -- вы можете включить предустановку для упрощения настройки
+        presets = {
+          bottom_search = true, -- используйте классическую нижнюю строку команды для поиска
+          command_palette = true, -- расположите командную строку и всплывающее меню вместе
+          long_message_to_split = true, -- длинные сообщения будут отправлены в разделенный
+          inc_rename = false, -- включает диалоговое окно ввода для inc-rename.nvim
+          lsp_doc_border = false, -- добавьте рамку для наведения курсора мыши на документы и справку о подписи
+        },
+      }
+      require("noice.lsp").hover()
+      -- See: https://github.com/NvChad/NvChad/issues/1656
+      -- vim.notify = require("noice").notify
+      -- vim.lsp.handlers["textDocument/hover"] = require("noice").hover
+      -- vim.lsp.handlers["textDocument/signatureHelp"] = require("noice").signature
+    end,
+  },
+  {
+    "hiphish/rainbow-delimiters.nvim",
+    event = "VeryLazy",
+    opts = {
+      enabled = true,
+    },
+    config = function()
+      local rainbow_delimiters = require "rainbow-delimiters"
+
+      vim.g.rainbow_delimiters = {
+        strategy = {
+          [""] = rainbow_delimiters.strategy["global"],
+          commonlisp = rainbow_delimiters.strategy["local"],
+        },
+        query = {
+          [""] = "rainbow-delimiters",
+          latex = "rainbow-blocks",
+        },
+        priority = {
+          [""] = 110,
+        },
+        highlight = {
+          "RainbowDelimiterRed",
+          "RainbowDelimiterYellow",
+          "RainbowDelimiterBlue",
+          "RainbowDelimiterOrange",
+          "RainbowDelimiterGreen",
+          "RainbowDelimiterViolet",
+          "RainbowDelimiterCyan",
+        },
+        blacklist = {},
+      }
+    end,
+  },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    event = "VeryLazy",
+    opts = {},
+    config = function()
+      local highlight = {
+        "RainbowRed",
+        "RainbowYellow",
+        "RainbowBlue",
+        "RainbowOrange",
+        "RainbowGreen",
+        "RainbowViolet",
+        "RainbowCyan",
+      }
+      local hooks = require "ibl.hooks"
+      -- создайте группы выделения в окне настройки выделения, чтобы они были сброшены
+      -- каждый раз, когда цветовая схема меняется
+      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+        vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+        vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+        vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+        vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+        vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+        vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+      end)
+
+      vim.g.rainbow_delimiters = { highlight = highlight }
+      require("ibl").setup {
+        scope = { highlight = highlight },
+        exclude = {
+          filetypes = {
+            "dashboard",
+          },
+        },
+      }
+
+      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
+      -- require("ibl").setup()
+    end,
+  },
+  {
+    "wakatime/vim-wakatime",
+    event = "VeryLazy",
+  },
+  {
+    -- https://github.com/LunarVim/bigfile.nvim
+    "LunarVim/bigfile.nvim",
+    event = "BufReadPre",
+    opts = {
+      filesize = 2, -- размер файла в MiB, плагин округляет размеры файлов до ближайшего MiB
+    },
+    config = function(_, opts)
+      require("bigfile").setup(opts)
     end,
   },
 }

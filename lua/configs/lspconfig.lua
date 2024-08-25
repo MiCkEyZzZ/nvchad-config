@@ -20,6 +20,8 @@ local servers = {
   "jsonls",
   "marksman",
   "protols",
+  "rust_analyzer",
+  "pyright",
 }
 
 -- Ф-я для организации импорта для typescript файлов

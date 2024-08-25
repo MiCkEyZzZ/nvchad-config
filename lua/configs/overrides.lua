@@ -24,6 +24,7 @@ M.treesitter = {
     "json",
     "yaml",
     "proto",
+    "rust",
   },
   textobjects = {
     select = {
@@ -75,6 +76,7 @@ M.mason = {
     "pyright",
     "solargraph",
     "sqls",
+    "rust",
   },
 }
 

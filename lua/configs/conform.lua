@@ -21,6 +21,7 @@ local options = {
     python = { "black" },
     ruby = { "rubocop" },
     sql = { "sqlfluff" },
+    rust = { "rustfmt" },
   },
 
   format_on_save = {
