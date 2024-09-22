@@ -354,6 +354,18 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("trouble").setup {
+        icons = true, -- Включаем отображение иконок для элементов
+        mode = "workspace_diagnostics", -- Используем режим для диагностики рабочей области
+        auto_open = false, -- Отключаем автоматическое открытие Trouble при появлении ошибок
+        auto_close = true, -- Автоматически закрывать Trouble, если ошибок нет
+        use_diagnostic_signs = true, -- Использовать значки диагностики из LSP
+        signs = {
+          error = "",
+          warning = "",
+          hint = "",
+          information = "",
+          other = "﫠",
+        },
         override = {
           zsh = {
             icon = "",
@@ -390,6 +402,21 @@ return {
             color = "#81e043",
             name = "Log",
           },
+          ["md"] = {
+            icon = "",
+            color = "#519aba",
+            name = "Markdown",
+          },
+          ["yml"] = {
+            icon = "",
+            color = "#cbcb41",
+            name = "YAML",
+          },
+          ["json"] = {
+            icon = "ﬥ",
+            color = "#cbcb41",
+            name = "JSON",
+          },
         },
       }
     end,
@@ -409,32 +436,46 @@ return {
           FIX = {
             icon = " ", -- значок, используемый для вывески и в результатах поиска
             color = "error", -- может быть шестнадцатеричным цветом или именованным цветом (см. ниже).
-            alt = { "FIXME", "BUG", "FIXIT", "ISSUE", "ИСПРАВИТЬ" }, -- набор других ключевых слов, которые все соответствуют этому FIX ключевых слов
-            -- signs = false, -- настраивать знаки для некоторых ключевых слов индивидуально
+            alt = { "FIXME", "BUG", "FIXIT", "ISSUE", "ИСПРАВИТЬ", "ПРОБЛЕМА" },
           },
           TODO = {
             icon = " ",
             color = "info",
-            alt = { "СДЕЛАТЬ", "НАСТРОИТЬ", "ИСПОЛНИТЬ" },
+            alt = { "TO-DO", "СДЕЛАТЬ", "ПЛАН", "ЗАДАЧА" },
           },
-          HACK = { icon = " ", color = "warning", alt = { "ХАК", "КОСТЫЛЬ" } },
+          HACK = {
+            icon = " ",
+            color = "warning",
+            alt = { "ХАК", "КОСТЫЛЬ", "WORKAROUND" },
+          },
           WARN = {
             icon = " ",
             color = "warning",
-            alt = { "ПРЕДУПРЕЖДЕНИЕ", "XXX" },
+            alt = { "ПРЕДУПРЕЖДЕНИЕ", "ВНИМАНИЕ", "ОСТОРОЖНО" },
           },
-          PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-          NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+          PERF = {
+            icon = " ",
+            alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" },
+          },
+          NOTE = {
+            icon = " ",
+            color = "hint",
+            alt = { "INFO", "ЗАМЕТКА", "ПРИМИЧАНИЕ" },
+          },
           TEST = {
             icon = "⏲ ",
             color = "test",
-            alt = {
-              "TESTING",
-              "ТЕСТИРОВАНИЕ",
-              "PASSED",
-              "ПРОЙДЕН",
-              "FAILED",
-            },
+            alt = { "TESTING", "ТЕСТИРОВАНИЕ", "PASSED", "ПРОЙДЕН", "FAILED" },
+          },
+          SECURITY = {
+            icon = " ",
+            color = "error",
+            alt = { "SEC", "ВНИМАНИЕ" },
+          },
+          DEPRECATED = {
+            icon = " ",
+            color = "warning",
+            alt = { "УСТАРЕВШЕЕ", "ОБНОВИТЬ" },
           },
         },
         gui_style = {
@@ -449,23 +490,22 @@ return {
         highlight = {
           multiline = true, -- включить многострочные комментарии к задачам
           multiline_pattern = "^.", -- шаблон lua, соответствующий следующей многострочной строке с начала соответствующего ключевого слова
-          multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
-          before = "", -- "fg" or "bg" or empty
-          keyword = "wide", -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
-          after = "fg", -- "fg" or "bg" or empty
-          pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
-          comments_only = true, -- uses treesitter to match keywords in comments only
-          max_line_len = 400, -- ignore lines longer than this
-          exclude = {}, -- list of file types to exclude highlighting
+          multiline_context = 5, -- уменьшить количество линий для пересчёта
+          before = "",
+          keyword = "wide", -- выделение ключевого слова и фона
+          after = "fg", -- выделение текста после ключевого слова
+          pattern = [[.*<(KEYWORDS)\s*:]],
+          comments_only = true, -- использовать только для комментариев
+          max_line_len = 200, -- игнорировать слишком длинные строки
+          exclude = { "markdown" }, -- исключить определенные типы файлов
         },
         -- список именованных цветов, в котором мы пытаемся извлечь графический интерфейс из
         -- список выделенных групп или используйте шестнадцатеричный цвет, если hl не найден, в качестве запасного варианта
         colors = {
           error = { "DiagnosticError", "ErrorMsg", "#DC2626" },
           warning = { "DiagnosticWarn", "WarningMsg", "#FBBF24" },
-          info = { "DiagnosticInfo", "#2563EB" },
+          info = { "DiagnosticInfo", "#2563EB" }, -- здесь теперь статический цвет
           hint = { "DiagnosticHint", "#10B981" },
-          default = { "Identifier", "#7C3AED" },
           test = { "Identifier", "#FF00FF" },
         },
         search = {
@@ -476,15 +516,17 @@ return {
             "--with-filename",
             "--line-number",
             "--column",
+            "--smart-case", -- игнорирование регистра
+            "--hidden", -- поиск в скрытых файлах
+            "--glob=!**/node_modules/**", -- исключение node_modules
+            "--glob=!**/*.min.*", -- исключение минифицированных файлов
+            "--glob=!**/dist/**", -- исключение dist
           },
-          -- регулярное выражение, которое будет использоваться для подбора ключевых слов.
-          -- не заменяйте заполнитель (КЛЮЧЕВЫЕ слова)
-          pattern = [[\b(KEYWORDS):]], -- ripgrep regex
-          -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
+          pattern = [[\b(KEYWORDS):]],
         },
       }
     end,
-  }, -- чтобы плагин не загружался
+  },
 
   -- нативный плагин Codeium для Neovim.
   -- подробнее смотри: https://github.com/Exafunction/codeium.nvim
@@ -494,7 +536,6 @@ return {
       "nvim-lua/plenary.nvim",
       "hrsh7th/nvim-cmp",
     },
-    lazy = false,
   },
 
   -- плагин позволяет быстро выделять любой фрагмент кода и создать красивый снимок кода
@@ -574,10 +615,14 @@ return {
     cmd = { "MarkdownPreview", "MarkdownPreviewStop" },
     lazy = false,
     build = function()
-      vim.fn["mkdp#util#install"]()
+      vim.fn["mkdp#util#install"]() -- Установка необходимых зависимостей для плагина
     end,
     init = function()
-      vim.g.mkdp_theme = "dark"
+      vim.g.mkdp_theme = "dark" -- Установка темы предпросмотра на тёмную
+      vim.g.mkdp_auto_start = 0 -- Отключить автозапуск предпросмотра
+      vim.g.mkdp_auto_close = 1 -- Автоматическое закрытие при переключении буфера
+      vim.g.mkdp_refresh_slow = 1 -- Более медленное обновление для производительности
+      vim.g.mkdp_page_title = "${name} — Markdown Preview" -- Кастомизация заголовка страницы
     end,
   },
   -- простая и быстрая полоса прокрутки для Neovim. Она намеренно лишена
@@ -840,6 +885,35 @@ return {
     },
     config = function(_, opts)
       require("bigfile").setup(opts)
+    end,
+  },
+  -- nx.nvim — расширение NX для nvim
+  -- подробнее смотри: https://github.com/Equilibris/nx.nvim
+  {
+    "Equilibris/nx.nvim",
+    requires = {
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      require("nx").setup {
+        -- Базовая команда для запуска всех остальных команд nx, некоторые другие значения могут быть:
+        -- - `npm nx`
+        -- - `yarn nx`
+        -- - `pnpm nx`
+        nx_cmd_root = "nx",
+
+        -- Возможности запуска команд,
+        -- более подробную информацию смотрите в разделе nx.m.command-runners
+        command_runner = require("nx.command-runners").terminal_cmd(),
+
+        -- Возможности визуализации форм,
+        -- более подробную информацию смотрите в разделе Средства визуализации форм nx.m.
+        form_renderer = require("nx.form-renderers").telescope(),
+
+        -- Загружать или не загружать конфигурацию nx,
+        -- более подробную информацию смотрите в разделе nx.loading-and-reloading
+        read_init = true,
+      }
     end,
   },
 }
