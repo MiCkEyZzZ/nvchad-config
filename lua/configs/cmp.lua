@@ -2,6 +2,7 @@ local present, cmp = pcall(require, "cmp")
 local luasnip = require "luasnip"
 
 if not present then
+  print "Не удалось загрузить nvim-cmp"
   return
 end
 

@@ -27,17 +27,24 @@ return {
   {
     "stevearc/dressing.nvim",
     lazy = false,
-    opts = {},
+    config = function()
+      require "configs.dressing"
+    end,
   },
-
+  -- плагин для Neovim, который предоставляет визуальные индикаторы изменений
+  -- в коде
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/stevearc/dressing.nvim
   {
     "lewis6991/gitsigns.nvim",
     event = "BufReadPost",
     config = function()
-      require("gitsigns").setup()
+      require "configs.gitsigns"
     end,
   },
-
+  -- плагин предназначена для настройки языковых серверов в Neovim, что позволяет
+  -- улучшить
+  -- опыт разработки за счет интеграции функций Language Server Protocol (LSP)
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/neovim/nvim-lspconfig
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -45,105 +52,81 @@ return {
       require "configs.lspconfig"
     end,
   },
-
+  -- плагин нужен, если вы работаете с языком Go и хотите улучшить свой опыт
+  -- разработки
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/ray-x/go.nvim
   {
     "ray-x/go.nvim",
-    dependencies = { -- opti onal packages
+    dependencies = {
       "ray-x/guihua.lua",
       "neovim/nvim-lspconfig",
       "nvim-treesitter/nvim-treesitter",
     },
     config = function()
-      require("go").setup {
-        go = "go",
-        gofmt = "gofumpt", -- Если хотите использовать gofmt, установите значение "gofmt"
-        fillstruct = "gopls",
-        tag_transform = false,
-        test_dir = "",
-        comment_placeholder = "",
-        verbose = false,
-        tag_options = "json=omitempty",
-        icons = { breakpoint = "🧘", currentpos = "🏃" },
-      }
+      require "configs.go" -- Подключаем вашу конфигурацию
     end,
     event = { "CmdlineEnter" },
     ft = { "go", "gomod" },
-    build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+    build = ':lua require("go.install").update_all_sync()', -- Обновление всех бинарных файлов
   },
-
-  -- библиотека для асинхронного ввода-вывода в Neovim, созданная на основе библиотеки asyncio в Python.
-  -- Библиотека ориентирована на предоставление как обычных асинхронных примитивов, так и асинхронных API для ядра Neovim.
-  -- подробнее смотри:  https://github.com/nvim-neotest/neotest
-  { "nvim-neotest/nvim-nio" },
-
-  -- портативный менеджер пакетов для Neovim, который работает везде, где работает Neovim.
-  -- подробнее смотри: https://github.com/williamboman/mason.nvim
+  -- библиотека для асинхронного ввода-вывода в Neovim, созданная на основе библиотеки
+  -- asyncio
+  -- в Python. Библиотека ориентирована на предоставление как обычных асинхронных
+  -- примитивов,
+  -- так и асинхронных API для ядра Neovim.
+  -- ПРИМИЧАНИЕ: подробнее смотри:  https://github.com/nvim-neotest/neotest
+  {
+    "nvim-neotest/nvim-nio",
+    config = function()
+      require "configs.nio" -- Подключаем вашу конфигурацию
+    end,
+  },
+  -- портативный менеджер пакетов для Neovim, который работает везде, где работает
+  -- Neovim.
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/williamboman/mason.nvim
   {
     "williamboman/mason.nvim",
-    opts = {
-      ensure_installed = {
-        "lua-language-server",
-        "stylua",
-        "html-lsp",
-        "css-lsp",
-        "prettier",
-        "eslint-lsp",
-        "clangd",
-        "clang-format",
-        "gopls",
-        "js-debug-adapter",
-        "typescript-language-server",
-        "dockerls",
-        "yamlls",
-        "jsonls",
-        "marksman",
-        "protols",
-        "pyright",
-        "mypy",
-        "ruff",
-        "black",
-      },
-    },
-  },
-
-  -- конфигурации Nvim Treesitter и уровень абстракции.
-  -- предоставляет простой и понятный способ использования интерфейса для tree-sitter в Neovim
-  -- подробнее смотри: https://github.com/nvim-treesitter/nvim-treesitter
-  {
-    "nvim-treesitter/nvim-treesitter",
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup {
+    config = function()
+      require("mason").setup {
         ensure_installed = {
-          "vim",
-          "lua",
-          "vimdoc",
-          "html",
-          "css",
-          "typescript",
-          "javascript",
-          "go",
-          "c",
-          "cpp",
-          "json",
-          "yaml",
-          "markdown",
-          "rust",
-          "proto",
-          "prisma",
-          "sql",
-          "toml",
-          "json",
-          "ruby",
+          "lua-language-server",
+          "stylua",
+          "html-lsp",
+          "css-lsp",
+          "prettier",
+          "eslint-lsp",
+          "clangd",
+          "clang-format",
+          "gopls",
+          "js-debug-adapter",
+          "typescript-language-server",
+          "dockerls",
+          "yamlls",
+          "jsonls",
+          "marksman",
+          "protols",
+          "pyright",
+          "mypy",
+          "ruff",
+          "black",
         },
-        sync_install = false,
-        auto_install = true,
-        highlight = { enable = true },
       }
     end,
   },
-
-  -- асинхронный плагин linter для Neovim, дополняющий встроенную поддержку протокола языкового сервера.
-  -- подробнее смотри: https://github.com/jose-elias-alvarez/null-ls.nvim
+  -- конфигурации Nvim Treesitter и уровень абстракции.
+  -- предоставляет простой и понятный способ использования интерфейса для tree-sitter
+  -- в Neovim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/nvim-treesitter/nvim-treesitter
+  {
+    "nvim-treesitter/nvim-treesitter",
+    run = ":TSUpdate",
+    config = function()
+      require "configs.treesitter"
+    end,
+  },
+  -- асинхронный плагин linter для Neovim, дополняющий встроенную поддержку протокола
+  -- языкового сервера.
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/jose-elias-alvarez/null-ls.nvim
   {
     "mfussenegger/nvim-lint",
     event = "VeryLazy",
@@ -151,30 +134,17 @@ return {
       require "configs.lint"
     end,
   },
-
   -- используйте treesitter для автоматического закрытия и переименования html-тега.
-  -- подробнее смотри: https://github.com/windwp/nvim-ts-autotag
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/windwp/nvim-ts-autotag
   {
     "windwp/nvim-ts-autotag",
     config = function()
-      require("nvim-ts-autotag").setup {
-        opts = {
-          -- Значения по умолчанию
-          enable_close = true, -- Автоматическое закрытие тегов
-          enable_rename = true, -- Автоматическое переименование пар тегов
-          enable_close_on_slash = false, -- Автоматическое закрытие при замыкании </
-        },
-        per_filetype = {
-          ["html"] = {
-            enable_close = false,
-          },
-        },
-      }
+      require "configs.autotag"
     end,
   },
-
-  -- плагин представляет собой lua-версию better_escape.vim, с некоторыми дополнительными функциями и оптимизациями.
-  -- подробнее смотри: https://github.com/max397574/better-escape.nvim
+  -- плагин представляет собой lua-версию better_escape.vim, с некоторыми дополнительными
+  -- функциями и оптимизациями.
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/max397574/better-escape.nvim
   {
     "max397574/better-escape.nvim",
     event = "InsertEnter",
@@ -182,10 +152,10 @@ return {
       require "configs.better-escape"
     end,
   },
-
-  -- Hop - это плагин, похожий на EasyMotion, который позволяет вам переходить в любое место документа
+  -- Hop - это плагин, похожий на EasyMotion, который позволяет вам переходить в любое
+  -- место документа
   -- с минимальным количеством нажатий клавиш.
-  -- подробнее смотри: https://github.com/phaazon/hop.nvim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/phaazon/hop.nvim
   {
     "phaazon/hop.nvim",
     event = "BufReadPost",
@@ -194,7 +164,8 @@ return {
       require "configs.hop"
     end,
   },
-
+  -- плагин служит для подсветки всех вхождений слова под курсором в редакторе.
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/RRethy/vim-illuminate
   {
     "RRethy/vim-illuminate",
     event = "BufReadPost",
@@ -202,9 +173,8 @@ return {
       require "configs.illuminate"
     end,
   },
-
   -- плавная прокрутка при скролинге
-  -- подробнее смотри: https://github.com/karb94/neoscroll.nvim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/karb94/neoscroll.nvim
   {
     "karb94/neoscroll.nvim",
     event = "BufReadPost",
@@ -212,16 +182,15 @@ return {
       require "configs.neoscroll"
     end,
   },
-
-  -- плагин связан с манипуляцией ковычками, скобками. Позволяет удалять, изменять и добавлять
-  -- подробнее смотри: https://github.com/tpope/vim-surround
+  -- плагин связан с манипуляцией ковычками, скобками. Позволяет удалять, изменять
+  -- и добавлять
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/tpope/vim-surround
   {
     "tpope/vim-surround",
     event = "BufReadPost",
   },
-
   -- плагин с несколькими курсорами для vim/neovim
-  -- подробнее смотри: https://github.com/mg979/vim-visual-multi
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/mg979/vim-visual-multi
   {
     "mg979/vim-visual-multi",
     event = "BufReadPost",
@@ -229,25 +198,13 @@ return {
       require "configs.visual-multi"
     end,
   },
-
   -- фреймворк для взаимодействия с тестами в рамках NeoVim.
-  -- подробнее смотри: https://github.com/nvim-neotest/neotest
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/nvim-neotest/neotest
   {
     "nvim-neotest/neotest",
     event = "VeryLazy",
     config = function()
-      require("neotest").setup {
-        adapters = {
-          require "neotest-jest" {
-            jestCommand = "npm test --",
-            jestConfigFile = "jest.config.ts",
-            env = { CI = true },
-            cwd = function()
-              return vim.fn.getcwd()
-            end,
-          },
-        },
-      }
+      require "configs.neotest"
     end,
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -256,38 +213,17 @@ return {
       "haydenmeade/neotest-jest",
     },
   },
-
   -- настройка DAP для нативного дебаггера
-  -- подробнее смотри: https://github.com/mfussenegger/nvim-dap
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/mfussenegger/nvim-dap
   {
     "mfussenegger/nvim-dap",
     config = function()
-      local ok, dap = pcall(require, "dap")
-      if not ok then
-        return
-      end
-      dap.configurations.typescript = {
-        {
-          type = "node2",
-          name = "node attach",
-          request = "attach",
-          program = "${file}",
-          cwd = vim.fn.getcwd(),
-          sourceMaps = true,
-          protocol = "inspector",
-        },
-      }
-      dap.adapters.node2 = {
-        type = "executable",
-        command = "node-debug2-adapter",
-        args = {},
-      }
+      require "configs.dap"
     end,
     dependencies = {
       "mxsdev/nvim-dap-vscode-js",
     },
   },
-
   -- поддержка Tailwind CSS в NeoVim
   {
     "razak17/tailwind-fold.nvim",
@@ -365,72 +301,7 @@ return {
     lazy = false,
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("trouble").setup {
-        icons = true, -- Включаем отображение иконок для элементов
-        mode = "workspace_diagnostics", -- Используем режим для диагностики рабочей области
-        auto_open = false, -- Отключаем автоматическое открытие Trouble при появлении ошибок
-        auto_close = true, -- Автоматически закрывать Trouble, если ошибок нет
-        use_diagnostic_signs = true, -- Использовать значки диагностики из LSP
-        signs = {
-          error = "",
-          warning = "",
-          hint = "",
-          information = "",
-          other = "﫠",
-        },
-        override = {
-          zsh = {
-            icon = "",
-            color = "#428850",
-            cterm_color = "65",
-            name = "Zsh",
-          },
-        },
-        -- глобально включить разные цвета подсветки для каждого значка (по умолчанию установлено значение true)
-        -- если установлено значение false, все значки будут иметь цвет значка по умолчанию.
-        color_icons = true,
-        -- глобально включить значки по умолчанию (значение по умолчанию равно false)
-        -- -- будет заменено параметром `get_icons`
-        default = false,
-        -- глобально включить "строгий" выбор значков - значок будет искать в разных таблицах,
-        -- сначала по имени файла, а если не найден, то по расширению; это предотвращает случаи,
-        -- когда файл не имеет расширения, но все равно имеет какой-либо значок
-        -- потому что его имя случайно совпало с каким-то расширением (по умолчанию - false).
-        strict = true,
-        -- то же, что и `override`, но специально для переопределений по имени файла
-        -- вступает в силу, если значение `strict` равно true
-        override_by_filename = {
-          [".gitignore"] = {
-            icon = "",
-            color = "#f1502f",
-            name = "Gitignore",
-          },
-        },
-        -- то же, что и "переопределение", но специально для переопределений по расширению
-        -- вступает в силу, когда значение "strict" равно true
-        override_by_extension = {
-          ["log"] = {
-            icon = "",
-            color = "#81e043",
-            name = "Log",
-          },
-          ["md"] = {
-            icon = "",
-            color = "#519aba",
-            name = "Markdown",
-          },
-          ["yml"] = {
-            icon = "",
-            color = "#cbcb41",
-            name = "YAML",
-          },
-          ["json"] = {
-            icon = "ﬥ",
-            color = "#cbcb41",
-            name = "JSON",
-          },
-        },
-      }
+      require "configs.trouble"
     end,
   },
   -- плагин предназначен для выделения и поиска комментариев к задачам,
@@ -732,10 +603,7 @@ return {
         local newVirtText = {}
         local totalLines = vim.api.nvim_buf_line_count(0)
         local foldedLines = endLnum - lnum
-        local suffix = (" 󰁂 %d %d%%"):format(
-          foldedLines,
-          foldedLines / totalLines * 100
-        )
+        local suffix = (" 󰁂 %d %d%%"):format(foldedLines, foldedLines / totalLines * 100)
         local sufWidth = vim.fn.strdisplaywidth(suffix)
         local targetWidth = width - sufWidth
         local curWidth = 0
@@ -759,8 +627,7 @@ return {
 
         local nvimWidth = vim.api.nvim_win_get_width(0)
 
-        local rAlignAppndx =
-          math.max(math.min(nvimWidth, width - 2) - curWidth - sufWidth, 0)
+        local rAlignAppndx = math.max(math.min(nvimWidth, width - 2) - curWidth - sufWidth, 0)
         suffix = " " .. ("━"):rep(rAlignAppndx) .. suffix
         table.insert(newVirtText, { suffix, "MoreMsg" })
         return newVirtText
@@ -902,10 +769,7 @@ return {
         },
       }
 
-      hooks.register(
-        hooks.type.SCOPE_HIGHLIGHT,
-        hooks.builtin.scope_highlight_from_extmark
-      )
+      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
       -- require("ibl").setup()
     end,
   },

@@ -1,12 +1,11 @@
 local configs = require "nvchad.configs.lspconfig"
-
-local on_attach = configs.on_attach
-local on_init = configs.on_init
-local capabilities = configs.capabilities
-
 local lspconfig = require "lspconfig"
 
--- Определяем список серверов для настройки
+-- Определяем функции для управления поведением LSP
+local on_attach = configs.on_attach
+local capabilities = configs.capabilities
+
+-- Список языковых серверов
 local servers = {
   "html",
   "cssls",
@@ -24,7 +23,7 @@ local servers = {
   "pyright",
 }
 
--- Ф-я для организации импорта для typescript файлов
+-- Функция для организации импорта в TypeScript
 local function organize_imports()
   local params = {
     command = "_typescript.organizeImports",
@@ -33,10 +32,11 @@ local function organize_imports()
   vim.lsp.buf.execute_command(params)
 end
 
--- Перебираем каждый сервер из списка и настраиваем
+-- Перебираем языковые серверы и настраиваем их
 for _, lsp in ipairs(servers) do
   local settings = {}
 
+  -- Специфические настройки для некоторых серверов
   if lsp == "gopls" then
     settings = {
       gopls = {
@@ -58,18 +58,21 @@ for _, lsp in ipairs(servers) do
     }
   end
 
+  -- Настройка LSP сервера
   lspconfig[lsp].setup {
     on_attach = function(client, bufnr)
-      on_attach(client, bufnr)
-      require("nvim_lsp_signature").setup()
+      on_attach(client, bufnr) -- Подключение пользовательских функций на прикрепление
+      require("nvim_lsp_signature").setup() -- Подключение для подписи LSP
     end,
     capabilities = capabilities,
     settings = settings,
-    commands = lsp == "tsserver" and {
-      OrganizeImports = {
-        organize_imports,
-        description = "Организация импорта",
-      },
-    } or nil,
+    commands = lsp == "tsserver"
+        and {
+          OrganizeImports = {
+            organize_imports,
+            description = "Организация импорта", -- Описание команды
+          },
+        }
+      or nil,
   }
 end

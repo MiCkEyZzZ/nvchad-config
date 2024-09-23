@@ -1,4 +1,11 @@
-require("lint").linters_by_ft = {
+local present, lint = pcall(require, "lint")
+
+if not present then
+  print "Не удалось загрузить nvim-lint"
+  return
+end
+
+lint.linters_by_ft = {
   javascript = { "eslint_d" },
   typescript = { "eslint_d" },
   typescriptreact = { "eslint_d" },
@@ -12,6 +19,6 @@ require("lint").linters_by_ft = {
 
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   callback = function()
-    require("lint").try_lint()
+    lint.try_lint()
   end,
 })
