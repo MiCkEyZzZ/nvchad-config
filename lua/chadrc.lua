@@ -6,18 +6,19 @@ local M = {}
 
 M.ui = {
   theme = "github_dark",
-  theme_toggle = { "github_dark", "github_light", "nord", "tokyonight" },
-  transparency = false,
+  theme_toggle = { "github_dark", "github_light" },
+  transparency = false, -- Добавляем прозрачность
   load_on_startup = true,
   -- Чтобы соответствовать nvim-tree
   tabufline = {
-    order = { "buffers", "tabs", "btns", "treeOffset" }, -- Добавьте «treeOffset», если вы не используете nvimTreeee в качестве всплывающего окна.
+    --order = { "buffers", "tabs", "btns", "treeOffset" }, -- Добавьте «treeOffset», если вы не используете nvimTreeee в качестве всплывающего окна.
+    order = { "treeOffset", "buffers", "tabs", "btns" },
   },
   term = {
     -- hl = "Обычный:term,WinSeparator:WinSeparator",
     -- sizes = { sp = 0.3, vsp = 0.2 },
     font = "FiraCode Nerd Font:h14", -- шрифт для терминала
-    size = 20,
+    size = 18,
     position = "center",
     float = {
       relative = "editor",
@@ -28,13 +29,13 @@ M.ui = {
       border = "single",
     },
   },
+  -- Подключаем кастомные иконки для статуса
   statusline = {
-    theme = "vscode_colored",
     separator_style = "round",
-    sections = { -- добавлены секции для более детальной настройки
-      left = { "mode", "branch", "diff" },
+    sections = {
+      left = { "mode", "branch", "diff", "diagnostics" }, -- Добавлены диагностика и другие секции
       mid = { "filename" },
-      right = { "fileformat", "fileencoding", "filetype" },
+      right = { "fileformat", "fileencoding", "filetype", "location" }, -- Добавлено отображение местоположения
     },
   },
   nvdash = {
@@ -55,11 +56,20 @@ M.ui = {
     -- Установка меню
     buttons = {
       { "  Найти файл", "Проб f f", "Telescope find_files" },
-      { "󰈚  Последние файлы", "Проб f o", "Telescope oldfiles" },
-      { "󰈭  Найти по слову", "Проб f w", "Telescope live_grep" },
+      {
+        "󰈚  Последние файлы",
+        "Проб f o",
+        "Telescope oldfiles",
+      },
+      {
+        "󰈭  Найти по слову",
+        "Проб f w",
+        "Telescope live_grep",
+      },
       { "  Закладки", "Проб m a", "Telescope marks" },
       { "  Темы", "Проб t h", "Telescope themes" },
       { "  Управление", "Проб c h", "NvCheatsheet" },
+      { "⚙️  Настройки", "Проб s", ":e $MYVIMRC" }, -- Добавлена кнопка для быстрого доступа к настройкам
     },
   },
   -- просто/сетка

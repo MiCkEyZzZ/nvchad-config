@@ -1,6 +1,6 @@
 return {
   -- лёгкий, но мощный модуль форматирования для Neovim.
-  -- подробнее смотри: https://github.com/prettier/vim-prettier
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/prettier/vim-prettier
   {
     "stevearc/conform.nvim",
     event = "BufWritePre",
@@ -10,7 +10,7 @@ return {
   },
 
   -- tmux плагин позволит легко перемещаться между разделениями vim и tmux
-  -- подробнее смотри: https://github.com/christoomey/vim-tmux-navigator
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/christoomey/vim-tmux-navigator
   {
     "christoomey/vim-tmux-navigator",
     lazy = false,
@@ -23,11 +23,19 @@ return {
     },
   },
   -- плагин для удобного взаимодействия с окнами
-  -- подробнее смотри: https://github.com/stevearc/dressing.nvim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/stevearc/dressing.nvim
   {
     "stevearc/dressing.nvim",
     lazy = false,
     opts = {},
+  },
+
+  {
+    "lewis6991/gitsigns.nvim",
+    event = "BufReadPost",
+    config = function()
+      require("gitsigns").setup()
+    end,
   },
 
   {
@@ -327,9 +335,13 @@ return {
 
   { "tpope/vim-fugitive" },
 
-  { "rbong/vim-flog", dependencies = {
-    "tpope/vim-fugitive",
-  }, lazy = false },
+  {
+    "rbong/vim-flog",
+    dependencies = {
+      "tpope/vim-fugitive",
+    },
+    lazy = false,
+  },
 
   { "sindrets/diffview.nvim", lazy = false },
 
@@ -436,7 +448,14 @@ return {
           FIX = {
             icon = " ", -- значок, используемый для вывески и в результатах поиска
             color = "error", -- может быть шестнадцатеричным цветом или именованным цветом (см. ниже).
-            alt = { "FIXME", "BUG", "FIXIT", "ISSUE", "ИСПРАВИТЬ", "ПРОБЛЕМА" },
+            alt = {
+              "FIXME",
+              "BUG",
+              "FIXIT",
+              "ISSUE",
+              "ИСПРАВИТЬ",
+              "ПРОБЛЕМА",
+            },
           },
           TODO = {
             icon = " ",
@@ -451,7 +470,11 @@ return {
           WARN = {
             icon = " ",
             color = "warning",
-            alt = { "ПРЕДУПРЕЖДЕНИЕ", "ВНИМАНИЕ", "ОСТОРОЖНО" },
+            alt = {
+              "ПРЕДУПРЕЖДЕНИЕ",
+              "ВНИМАНИЕ",
+              "ОСТОРОЖНО",
+            },
           },
           PERF = {
             icon = " ",
@@ -465,7 +488,13 @@ return {
           TEST = {
             icon = "⏲ ",
             color = "test",
-            alt = { "TESTING", "ТЕСТИРОВАНИЕ", "PASSED", "ПРОЙДЕН", "FAILED" },
+            alt = {
+              "TESTING",
+              "ТЕСТИРОВАНИЕ",
+              "PASSED",
+              "ПРОЙДЕН",
+              "FAILED",
+            },
           },
           SECURITY = {
             icon = " ",
@@ -667,7 +696,8 @@ return {
       },
     },
     opts = {
-      -- INFO: Uncomment to use treeitter as fold provider, otherwise nvim lsp is used
+      -- ПРИМИЧАНИЕ: раскомментируйте, чтобы использовать three hitter в качестве поставщика fold, в
+      -- противном случае используется nvim lsp
       provider_selector = function(bufnr, filetype, buftype)
         return { "treesitter", "indent" }
       end,
@@ -702,7 +732,10 @@ return {
         local newVirtText = {}
         local totalLines = vim.api.nvim_buf_line_count(0)
         local foldedLines = endLnum - lnum
-        local suffix = (" 󰁂 %d %d%%"):format(foldedLines, foldedLines / totalLines * 100)
+        local suffix = (" 󰁂 %d %d%%"):format(
+          foldedLines,
+          foldedLines / totalLines * 100
+        )
         local sufWidth = vim.fn.strdisplaywidth(suffix)
         local targetWidth = width - sufWidth
         local curWidth = 0
@@ -726,7 +759,8 @@ return {
 
         local nvimWidth = vim.api.nvim_win_get_width(0)
 
-        local rAlignAppndx = math.max(math.min(nvimWidth, width - 2) - curWidth - sufWidth, 0)
+        local rAlignAppndx =
+          math.max(math.min(nvimWidth, width - 2) - curWidth - sufWidth, 0)
         suffix = " " .. ("━"):rep(rAlignAppndx) .. suffix
         table.insert(newVirtText, { suffix, "MoreMsg" })
         return newVirtText
@@ -868,7 +902,10 @@ return {
         },
       }
 
-      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
+      hooks.register(
+        hooks.type.SCOPE_HIGHLIGHT,
+        hooks.builtin.scope_highlight_from_extmark
+      )
       -- require("ibl").setup()
     end,
   },
