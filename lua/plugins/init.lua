@@ -86,32 +86,30 @@ return {
   -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/williamboman/mason.nvim
   {
     "williamboman/mason.nvim",
-    config = function()
-      require("mason").setup {
-        ensure_installed = {
-          "lua-language-server",
-          "stylua",
-          "html-lsp",
-          "css-lsp",
-          "prettier",
-          "eslint-lsp",
-          "clangd",
-          "clang-format",
-          "gopls",
-          "js-debug-adapter",
-          "typescript-language-server",
-          "dockerls",
-          "yamlls",
-          "jsonls",
-          "marksman",
-          "protols",
-          "pyright",
-          "mypy",
-          "ruff",
-          "black",
-        },
-      }
-    end,
+    opts = {
+      ensure_installed = {
+        "lua-language-server",
+        "stylua",
+        "html-lsp",
+        "css-lsp",
+        "prettier",
+        "eslint-lsp",
+        "clangd",
+        "clang-format",
+        "gopls",
+        "js-debug-adapter",
+        "typescript-language-server",
+        "dockerls",
+        "yamlls",
+        "jsonls",
+        "marksman",
+        "protols",
+        "pyright",
+        "mypy",
+        "ruff",
+        "black",
+      },
+    },
   },
   -- конфигурации Nvim Treesitter и уровень абстракции.
   -- предоставляет простой и понятный способ использования интерфейса для tree-sitter
@@ -516,6 +514,154 @@ return {
     },
     config = function()
       require "configs.nx" -- замените на путь к вашему конфигурационному файлу
+    end,
+  },
+  --  универсальный плагин neovim, написанный на lua, который обеспечивает
+  --  превосходное управление проектами.
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/ahmedkhalf/project.nvim
+  {
+    "ahmedkhalf/project.nvim",
+    config = function()
+      require("project_nvim").setup {
+        -- Укажите пути к вашим проектам
+        manual_mode = false, -- автоматически определять проекты
+        detection_methods = { "pattern", "lsp" }, -- методы обнаружения проектов
+        patterns = { ".git", "Makefile", "package.json", "Cargo.toml" }, -- шаблоны для определения корня проекта
+        show_hidden = false, -- показывать скрытые файлы
+        silent_chdir = true, -- без вывода сообщений о смене директории
+        scope_chdir = "global", -- область действия смены директории (global или local)
+      }
+    end,
+  },
+  -- плагин, который показывает доступные команды и их комбинации, что может
+  -- помочь в изучении сочетаний клавиш.
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/folke/which-key.nvim
+  {
+    "folke/which-key.nvim",
+    config = function()
+      require("which-key").setup {
+        -- Настройки по умолчанию
+        plugins = {
+          marks = true, -- показывать закладки
+          registers = true, -- показывать регистры
+          spelling = {
+            enabled = true, -- показывать исправления для опечаток
+            suggestions = 20, -- количество предложений
+          },
+        },
+        key_labels = {}, -- можете изменить метки клавиш
+        icons = {
+          breadcrumb = "»", -- иконка для "хлебных крошек"
+          separator = "➜", -- иконка для разделителей
+          group = "+", -- иконка для групп
+        },
+        window = {
+          border = "rounded", -- стиль границы окна
+          position = "bottom", -- положение окна (bottom, top, left, right)
+          margin = { 1, 2, 1, 2 }, -- отступы
+          padding = { 2, 2, 2, 2 }, -- внутренние отступы
+        },
+        layout = {
+          height = { min = 4, max = 25 }, -- высота окна
+          width = { min = 20, max = 50 }, -- ширина окна
+          spacing = 3, -- расстояние между элементами
+        },
+        ignore_missing = false, -- игнорировать отсутствующие клавиши
+        show_help = true, -- показывать помощь по сочетаниям клавиш
+      }
+
+      -- Пример настройки пользовательских сочетаний клавиш
+      local wk = require "which-key"
+      wk.register({
+        ["<leader>f"] = { name = "File", f = "Find file", r = "Refresh file", s = "Save file" },
+        ["<leader>g"] = { name = "Git", s = "Status", c = "Commit", p = "Push" },
+        ["<leader>w"] = { name = "Window", h = "Split left", j = "Split below", k = "Close window" },
+      }, { prefix = "<leader>" })
+    end,
+  },
+  -- плагин Neovim для просмотра файловой системы и других древовидных структур
+  -- в любом удобном для вас стиле, включая боковые панели, плавающие окна,
+  -- разделенный стиль netrw или все сразу!
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/nvim-neo-tree/neo-tree.nvim
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v2.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim", -- Зависимость
+      "nvim-tree/nvim-web-devicons", -- Иконки для файлов
+    },
+    config = function()
+      require("neo-tree").setup {
+        close_if_last_window = true, -- Закрывать, если это последнее окно
+        popup_border_style = "rounded", -- Стиль границы всплывающих окон
+        enable_git_status = true, -- Включить статус git
+        enable_diagnostics = true, -- Включить диагностику
+        default_component_configs = {
+          name = {
+            use_git_status_colors = true, -- Использовать цвета статусов git
+          },
+          git_status = {
+            symbols = {
+              -- Внешний вид символов статусов
+              added = "✚", -- Добавленные файлы
+              modified = "✏️", -- Измененные файлы
+              deleted = "✖️", -- Удаленные файлы
+              renamed = "➜", -- Переименованные файлы
+              untracked = "★", -- Неотслеживаемые файлы
+              ignored = "☒", -- Игнорируемые файлы
+              -- и т.д.
+            },
+          },
+        },
+        window = {
+          position = "left", -- Позиция окна (left, right, top, bottom)
+          width = 30, -- Ширина окна
+          mappings = {
+            ["<space>"] = "toggle_node", -- Переключение узлов
+            ["<cr>"] = "open", -- Открытие файла или папки
+            ["<bs>"] = "close_node", -- Закрытие узлов
+            ["<leader>r"] = "refresh", -- Обновление дерева
+            -- Добавьте свои сочетания клавиш здесь
+          },
+        },
+        filesystem = {
+          filtered_items = {
+            hide_dotfiles = true, -- Скрыть файлы с точкой
+            hide_gitignored = true, -- Скрыть игнорируемые git файлы
+          },
+          follow_current_file = true, -- Следить за текущим файлом
+          group_empty_dirs = true, -- Группировка пустых директорий
+        },
+      }
+
+      -- Привязка клавиш для открытия/закрытия neo-tree
+      vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { noremap = true, silent = true })
+    end,
+  },
+  -- умный и мощный плагин для комментирования для neovim
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/numToStr/Comment.nvim
+  {
+    "numToStr/Comment.nvim",
+    config = function()
+      require("Comment").setup {
+        -- Опции по умолчанию
+        mappings = {
+          -- Используйте <leader>c для комментирования и <leader>u для раскомментирования
+          basic = true, -- Включение базовых сочетаний клавиш
+          extra = true, -- Включение дополнительных сочетаний клавиш
+        },
+        pre_hook = function(ctx)
+          local U = require "Comment.utils"
+
+          -- Определяем, что делать в зависимости от типа контекста
+          if ctx.ctype == U.ctype.block then
+            return "--[[", "--]]" -- Использование блочных комментариев
+          else
+            return "--", "" -- Использование однострочных комментариев
+          end
+        end,
+        post_hook = nil, -- Вы можете добавить функцию для выполнения после комментирования
+      }
     end,
   },
 }

@@ -13,7 +13,6 @@ cmp.setup {
     end,
   },
   mapping = {
-    -- Выбор элемента с помощью стрелок вверх/вниз
     ["<Down>"] = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Select },
     ["<Up>"] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Select },
     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -21,7 +20,6 @@ cmp.setup {
     ["<C-Space>"] = cmp.mapping.complete(),
     ["<C-e>"] = cmp.mapping.close(),
     ["<CR>"] = cmp.mapping.confirm { select = true },
-    -- Оставляем TAB для переключения снайпетов
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
