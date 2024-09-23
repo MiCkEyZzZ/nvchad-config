@@ -224,233 +224,135 @@ return {
       "mxsdev/nvim-dap-vscode-js",
     },
   },
-  -- поддержка Tailwind CSS в NeoVim
-  {
-    "razak17/tailwind-fold.nvim",
-    opts = {},
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    event = "VeryLazy",
-    config = function()
-      require("tailwind-fold").setup { ft = { "html", "twig" } }
-    end,
-  },
-
   -- интерфейс для DAP (нативный дебаггер)
-  -- подробнее смотри: https://github.com/rcarriga/nvim-dap-ui
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/rcarriga/nvim-dap-ui
   {
     "rcarriga/nvim-dap-ui",
+    event = "VeryLazy",
     config = function()
-      require("dapui").setup()
-
-      local dap, dapui = require "dap", require "dapui"
-
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open {}
-      end
-      dap.listeners.before.event_terminated["dapui_config"] = function()
-        dapui.close {}
-      end
-      dap.listeners.before.event_exited["dapui_config"] = function()
-        dapui.close {}
-      end
+      require "configs.dap-ui"
     end,
     dependencies = {
       "mfussenegger/nvim-dap",
     },
   },
-
-  -- поддержка neodev для упрощения разработки
+  -- плагин Neovim для сокрытия длинных атрибутов класса.
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/razak17/tailwind-fold.nvim
   {
-    "folke/neodev.nvim",
+    "razak17/tailwind-fold.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
-      require("neodev").setup {
-        library = { plugins = { "nvim-dap-ui" }, types = true },
-      }
+      require "configs.tailwind-fold"
     end,
   },
-
-  { "tpope/vim-fugitive" },
-
+  -- поддержка neodev для упрощения разработки
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/folke/neodev.nvim
+  {
+    "folke/neodev.nvim",
+    event = "VeryLazy",
+    config = function()
+      require "configs.neodev"
+    end,
+  },
+  -- плагин Vim для Git
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/tpope/vim-fugitive
+  {
+    "tpope/vim-fugitive",
+    event = "VeryLazy",
+    config = function()
+      require "configs.fugitive"
+    end,
+  },
+  -- плагин невероятно быстрый, потрясающе красивый и исключительно мощный
+  -- инструмент для просмотра веток Git для Vim/Neovim.
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/rbong/vim-flog
   {
     "rbong/vim-flog",
     dependencies = {
       "tpope/vim-fugitive",
     },
-    lazy = false,
-  },
-
-  { "sindrets/diffview.nvim", lazy = false },
-
-  {
-    "ggandor/leap.nvim",
-    lazy = false,
+    lazy = false, -- Загружается при старте, так как lazy = false
     config = function()
-      require("leap").add_default_mappings(true)
+      require "configs.flog"
     end,
   },
-
+  -- плагин для работы с git-диффами
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/sindrets/diffview.nvim
+  {
+    "sindrets/diffview.nvim",
+    lazy = false, -- Загружается при старте
+    config = function()
+      require "configs.diffview"
+    end,
+  },
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/ggandor/leap.nvim
+  {
+    "ggandor/leap.nvim",
+    lazy = false, -- Загружается при старте
+    config = function()
+      require "configs.leap"
+    end,
+  },
+  -- это расширение для работы с quickfix-окнами в Neovim. Quickfix позволяет
+  -- отображать результаты поиска и ошибок в отдельном окне, а bqf улучшает
+  -- его функциональность
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/kevinhwang91/nvim-bqf
   {
     "kevinhwang91/nvim-bqf",
-    lazy = false,
+    lazy = false, -- Плагин загружается сразу при старте
+    config = function()
+      require "configs.bqf"
+    end,
   },
-
-  -- плагин показывает ошибки в коде
-  -- подробнее смотри: https://github.com/folke/trouble.nvim
+  -- плагин для улучшенной визуализации диагностических сообщений (ошибок,
+  -- предупреждений, информации и подсказок) в вашем проекте.
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/folke/trouble.nvim
   {
     "folke/trouble.nvim",
-    lazy = false,
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    lazy = false, -- Плагин загружается сразу при старте
+    dependencies = { "nvim-tree/nvim-web-devicons" }, -- Зависимость для иконок
     config = function()
       require "configs.trouble"
     end,
   },
   -- плагин предназначен для выделения и поиска комментариев к задачам,
   -- таких как TODO, ВЗЛОМ, ОШИБКА в вашей кодовой базе
-  -- подробнее смотри: https://github.com/folke/todo-comments.nvim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/folke/todo-comments.nvim
   {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     lazy = false,
     config = function()
-      require("todo-comments").setup {
-        signs = true, -- отображать значки в столбце "знаки"
-        sign_priority = 8, -- приоритет знака
-        keywords = {
-          FIX = {
-            icon = " ", -- значок, используемый для вывески и в результатах поиска
-            color = "error", -- может быть шестнадцатеричным цветом или именованным цветом (см. ниже).
-            alt = {
-              "FIXME",
-              "BUG",
-              "FIXIT",
-              "ISSUE",
-              "ИСПРАВИТЬ",
-              "ПРОБЛЕМА",
-            },
-          },
-          TODO = {
-            icon = " ",
-            color = "info",
-            alt = { "TO-DO", "СДЕЛАТЬ", "ПЛАН", "ЗАДАЧА" },
-          },
-          HACK = {
-            icon = " ",
-            color = "warning",
-            alt = { "ХАК", "КОСТЫЛЬ", "WORKAROUND" },
-          },
-          WARN = {
-            icon = " ",
-            color = "warning",
-            alt = {
-              "ПРЕДУПРЕЖДЕНИЕ",
-              "ВНИМАНИЕ",
-              "ОСТОРОЖНО",
-            },
-          },
-          PERF = {
-            icon = " ",
-            alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" },
-          },
-          NOTE = {
-            icon = " ",
-            color = "hint",
-            alt = { "INFO", "ЗАМЕТКА", "ПРИМИЧАНИЕ" },
-          },
-          TEST = {
-            icon = "⏲ ",
-            color = "test",
-            alt = {
-              "TESTING",
-              "ТЕСТИРОВАНИЕ",
-              "PASSED",
-              "ПРОЙДЕН",
-              "FAILED",
-            },
-          },
-          SECURITY = {
-            icon = " ",
-            color = "error",
-            alt = { "SEC", "ВНИМАНИЕ" },
-          },
-          DEPRECATED = {
-            icon = " ",
-            color = "warning",
-            alt = { "УСТАРЕВШЕЕ", "ОБНОВИТЬ" },
-          },
-        },
-        gui_style = {
-          fg = "NONE", -- Стиль графического интерфейса, который будет использоваться для группы выделения fg.
-          bg = "BOLD", -- Стиль графического интерфейса, который будет использоваться для группы выделения bg.
-        },
-        merge_keywords = true, -- при значении true пользовательские ключевые слова будут объединены со значениями по умолчанию
-        -- выделение строки, содержащей комментарий к задаче
-        -- * before: highlights before the keyword (typically comment characters)
-        -- * keyword: highlights of the keyword
-        -- * after: highlights after the keyword (todo text)
-        highlight = {
-          multiline = true, -- включить многострочные комментарии к задачам
-          multiline_pattern = "^.", -- шаблон lua, соответствующий следующей многострочной строке с начала соответствующего ключевого слова
-          multiline_context = 5, -- уменьшить количество линий для пересчёта
-          before = "",
-          keyword = "wide", -- выделение ключевого слова и фона
-          after = "fg", -- выделение текста после ключевого слова
-          pattern = [[.*<(KEYWORDS)\s*:]],
-          comments_only = true, -- использовать только для комментариев
-          max_line_len = 200, -- игнорировать слишком длинные строки
-          exclude = { "markdown" }, -- исключить определенные типы файлов
-        },
-        -- список именованных цветов, в котором мы пытаемся извлечь графический интерфейс из
-        -- список выделенных групп или используйте шестнадцатеричный цвет, если hl не найден, в качестве запасного варианта
-        colors = {
-          error = { "DiagnosticError", "ErrorMsg", "#DC2626" },
-          warning = { "DiagnosticWarn", "WarningMsg", "#FBBF24" },
-          info = { "DiagnosticInfo", "#2563EB" }, -- здесь теперь статический цвет
-          hint = { "DiagnosticHint", "#10B981" },
-          test = { "Identifier", "#FF00FF" },
-        },
-        search = {
-          command = "rg",
-          args = {
-            "--color=never",
-            "--no-heading",
-            "--with-filename",
-            "--line-number",
-            "--column",
-            "--smart-case", -- игнорирование регистра
-            "--hidden", -- поиск в скрытых файлах
-            "--glob=!**/node_modules/**", -- исключение node_modules
-            "--glob=!**/*.min.*", -- исключение минифицированных файлов
-            "--glob=!**/dist/**", -- исключение dist
-          },
-          pattern = [[\b(KEYWORDS):]],
-        },
-      }
+      require "configs.todo"
     end,
   },
-
   -- нативный плагин Codeium для Neovim.
-  -- подробнее смотри: https://github.com/Exafunction/codeium.nvim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/Exafunction/codeium.nvim
   {
     "Exafunction/codeium.vim",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "hrsh7th/nvim-cmp",
     },
+    config = function()
+      require "configs.codeium"
+    end,
   },
-
   -- плагин позволяет быстро выделять любой фрагмент кода и создать красивый снимок кода
   -- прямо из терминала. Включить режим выделения можно нажав на клавишу v после этого
   -- перемещаясь стрелками по необходимой области кода.
-  -- подробнее смотри: https://github.com/ellisonleao/carbon-now.nvim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/ellisonleao/carbon-now.nvim
   {
     "ellisonleao/carbon-now.nvim",
     lazy = true,
     cmd = "CarbonNow",
-    opts = {},
+    config = function()
+      require "configs.carbon-now"
+    end,
   },
-
   -- невероятно быстрая и простая в настройке строка состояния Neovim, написанная на Lua.
-  -- подробнее смотри: https://github.com/nvim-lualine/lualine.nvim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/nvim-lualine/lualine.nvim
   {
     "nvim-lualine/lualine.nvim",
     event = "BufReadPost",
@@ -459,39 +361,17 @@ return {
       require "configs.lualine"
     end,
   },
-
-  -- одна из темных тем для Neovim, вдохновленных Solarized, написанная на Lua.
-  -- подробнее смотри: https://github.com/craftzdog/solarized-osaka.nvim?tab=readme-ov-file
-  {
-    "craftzdog/solarized-osaka.nvim",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("solarized-osaka").setup {
-        transparent = true, -- включите эту опцию, чтобы отключить настройку цвета фона
-        terminal_colors = true, -- Настройте цвета, используемые при открытии ":терминала" в [Neovim](https://github.com/neovim/neovim)
-        styles = {
-          -- стиль, который будет применяться к различным синтаксическим группам
-          -- значение - это любое допустимое значение attrlist для `:help nvim_set_hl`
-          comments = { italic = true },
-          keywords = { italic = true },
-        },
-      }
-    end,
-  },
-
   -- плагин показывает подсказки в виде всплывающих окон.
-  -- подробнее смотри: https://github.com/ray-x/lsp_signature.nvim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/ray-x/lsp_signature.nvim
   {
     "ray-x/lsp_signature.nvim",
     event = "VeryLazy",
-    opts = {},
-    config = function(_, opts)
-      require("lsp_signature").setup(opts)
+    config = function()
+      require "configs.lsp_signature"
     end,
   },
   -- автодополнения с выбором элементов с помощью стрелок
-  -- подробности: https://github.com/hrsh7th/nvim-cmp
+  -- ПРИМИЧАНИЕ: подробности: https://github.com/hrsh7th/nvim-cmp
   {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
@@ -527,25 +407,25 @@ return {
   },
   -- простая и быстрая полоса прокрутки для Neovim. Она намеренно лишена
   -- каких-либо особенностей и останется таковой.
-  -- подробнее смотри: https://github.com/ojroques/nvim-scrollbar
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/ojroques/nvim-scrollbar
   {
     "ojroques/nvim-scrollbar",
     event = "BufReadPost",
     config = function()
-      require("scrollbar").setup {}
+      require "configs.scrollbar"
     end,
   },
   -- плагин neovim для создания файлов .gitignore за считанные секунды,
   -- позволяющий вам выбирать из огромного количества различных технологий.
-  -- подробнее смотри: https://github.com/wintermute-cell/gitignore.nvim
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/wintermute-cell/gitignore.nvim
   {
     "wintermute-cell/gitignore.nvim",
     config = function()
-      require "gitignore"
+      require "configs.gitignore"
     end,
   },
   -- nvim-ufo - плагин для управления видимостью блоков
-  -- подробнее смотри: https://github.com/kevinhwang91/nvim-ufo
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/kevinhwang91/nvim-ufo
   {
     "kevinhwang91/nvim-ufo",
     event = "BufReadPost",
@@ -566,255 +446,76 @@ return {
         end,
       },
     },
-    opts = {
-      -- ПРИМИЧАНИЕ: раскомментируйте, чтобы использовать three hitter в качестве поставщика fold, в
-      -- противном случае используется nvim lsp
-      provider_selector = function(bufnr, filetype, buftype)
-        return { "treesitter", "indent" }
-      end,
-      open_fold_hl_timeout = 400,
-      close_fold_kinds_for_ft = {
-        -- "imports",
-        -- "comment",
-      },
-      preview = {
-        win_config = {
-          border = { "", "─", "", "", "", "─", "", "" },
-          -- winhighlight = "Normal:Folded",
-          winblend = 0,
-        },
-        mappings = {
-          scrollU = "<C-u>",
-          scrollD = "<C-d>",
-          jumpTop = "[",
-          jumpBot = "]",
-        },
-      },
-    },
-    init = function()
-      vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-      vim.o.foldcolumn = "1" -- '0' это не так уж плохо
-      vim.o.foldlevel = 900 -- При использовании ufo provider требуется большое значение, не стесняйтесь уменьшать значение
-      vim.o.foldlevelstart = 99
-      vim.o.foldenable = false
-    end,
-    config = function(_, opts)
-      local handler = function(virtText, lnum, endLnum, width, truncate)
-        local newVirtText = {}
-        local totalLines = vim.api.nvim_buf_line_count(0)
-        local foldedLines = endLnum - lnum
-        local suffix = (" 󰁂 %d %d%%"):format(foldedLines, foldedLines / totalLines * 100)
-        local sufWidth = vim.fn.strdisplaywidth(suffix)
-        local targetWidth = width - sufWidth
-        local curWidth = 0
-        for _, chunk in ipairs(virtText) do
-          local chunkText = chunk[1]
-          local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-          if targetWidth > curWidth + chunkWidth then
-            table.insert(newVirtText, chunk)
-          else
-            chunkText = truncate(chunkText, targetWidth - curWidth)
-            local hlGroup = chunk[2]
-            table.insert(newVirtText, { chunkText, hlGroup })
-            chunkWidth = vim.fn.strdisplaywidth(chunkText)
-            if curWidth + chunkWidth < targetWidth then
-              suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
-            end
-            break
-          end
-          curWidth = curWidth + chunkWidth
-        end
-
-        local nvimWidth = vim.api.nvim_win_get_width(0)
-
-        local rAlignAppndx = math.max(math.min(nvimWidth, width - 2) - curWidth - sufWidth, 0)
-        suffix = " " .. ("━"):rep(rAlignAppndx) .. suffix
-        table.insert(newVirtText, { suffix, "MoreMsg" })
-        return newVirtText
-      end
-      opts["fold_virt_text_handler"] = handler
-      require("ufo").setup(opts)
-      vim.keymap.set("n", "zR", require("ufo").openAllFolds)
-      vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
-      vim.keymap.set("n", "zr", require("ufo").openFoldsExceptKinds)
-      vim.keymap.set("n", "zK", function()
-        local winid = require("ufo").peekFoldedLinesUnderCursor()
-        if not winid then
-          -- vim.lsp.buf.hover()
-          vim.cmd [[ Lspsaga hover_doc ]]
-        end
-      end)
+    config = function()
+      require "configs.ufo" -- Подключаем отдельный конфиг
     end,
   },
-  -- очень экспериментальный плагин, который полностью заменяет пользовательский интерфейс для сообщений,
+  -- очень экспериментальный плагин, который полностью заменяет пользовательский
+  -- интерфейс для сообщений,
   -- командной строки и всплывающего меню.
-  -- подробнее смотри: https://github.com/folke/noice.nvim?ysclid=m08hkqwulh979062613
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/folke/noice.nvim?ysclid=m08hkqwulh979062613
   {
     "folke/noice.nvim",
     dependencies = {
-      -- если вы не хотите загружать какой-либо плагин, приведенный ниже, не забудьте добавить соответствующие
-      -- записи "module="...""
       "MunifTanjim/nui.nvim",
-      -- ОПЦИОНАЛЬНО:
-      --   `nvim-notify` это необходимо только в том случае, если вы хотите использовать режим просмотра уведомлений.
-      --   если он недоступен, мы используем "mini" в качестве запасного варианта
       "rcarriga/nvim-notify",
-    },
-    opts = {
-      -- add any options here
-      -- lsp = {
-      --   signature = {
-      --     enable = false,
-      --   },
-      -- },
     },
     event = "VeryLazy",
     config = function()
-      require("noice").setup {
-        lsp = {
-          -- переопределите рендеринг markdown, чтобы ** cmp** и другие плагины использовали **Tree sitter.**
-          override = {
-            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-            ["vim.lsp.util.stylize_markdown"] = true,
-            ["cmp.entry.get_documentation"] = true, -- требуется hrsh7th/nvim-cmp
-          },
-          hover = { enabled = false }, -- <-- HERE!
-          signature = { enabled = false }, -- <-- HERE!
-        },
-        -- вы можете включить предустановку для упрощения настройки
-        presets = {
-          bottom_search = true, -- используйте классическую нижнюю строку команды для поиска
-          command_palette = true, -- расположите командную строку и всплывающее меню вместе
-          long_message_to_split = true, -- длинные сообщения будут отправлены в разделенный
-          inc_rename = false, -- включает диалоговое окно ввода для inc-rename.nvim
-          lsp_doc_border = false, -- добавьте рамку для наведения курсора мыши на документы и справку о подписи
-        },
-      }
-      require("noice.lsp").hover()
-      -- See: https://github.com/NvChad/NvChad/issues/1656
-      -- vim.notify = require("noice").notify
-      -- vim.lsp.handlers["textDocument/hover"] = require("noice").hover
-      -- vim.lsp.handlers["textDocument/signatureHelp"] = require("noice").signature
+      require "configs.noice" -- Подключаем отдельный конфиг
     end,
   },
+  -- добавляет цветовые обозначения для скобок и других ограничителей в коде, чтобы
+  -- сделать его более читабельным.
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/HiPhish/rainbow-delimiters.nvim
   {
     "hiphish/rainbow-delimiters.nvim",
     event = "VeryLazy",
-    opts = {
-      enabled = true,
-    },
     config = function()
-      local rainbow_delimiters = require "rainbow-delimiters"
-
-      vim.g.rainbow_delimiters = {
-        strategy = {
-          [""] = rainbow_delimiters.strategy["global"],
-          commonlisp = rainbow_delimiters.strategy["local"],
-        },
-        query = {
-          [""] = "rainbow-delimiters",
-          latex = "rainbow-blocks",
-        },
-        priority = {
-          [""] = 110,
-        },
-        highlight = {
-          "RainbowDelimiterRed",
-          "RainbowDelimiterYellow",
-          "RainbowDelimiterBlue",
-          "RainbowDelimiterOrange",
-          "RainbowDelimiterGreen",
-          "RainbowDelimiterViolet",
-          "RainbowDelimiterCyan",
-        },
-        blacklist = {},
-      }
+      require "configs.rainbow_delimiters" -- Подключаем отдельный конфиг
     end,
   },
+  -- предназначен для отображения вертикальных линий, которые помогают визуально
+  -- обозначать уровни отступов в коде. Это делает код более читабельным, особенно в
+  -- языках программирования с вложенной структурой (например, Python, JavaScript, Lua и др.).
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/lukas-reineke/indent-blankline.nvim
   {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
     event = "VeryLazy",
-    opts = {},
     config = function()
-      local highlight = {
-        "RainbowRed",
-        "RainbowYellow",
-        "RainbowBlue",
-        "RainbowOrange",
-        "RainbowGreen",
-        "RainbowViolet",
-        "RainbowCyan",
-      }
-      local hooks = require "ibl.hooks"
-      -- создайте группы выделения в окне настройки выделения, чтобы они были сброшены
-      -- каждый раз, когда цветовая схема меняется
-      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-        vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
-        vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
-        vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
-        vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
-        vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
-        vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
-        vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
-      end)
-
-      vim.g.rainbow_delimiters = { highlight = highlight }
-      require("ibl").setup {
-        scope = { highlight = highlight },
-        exclude = {
-          filetypes = {
-            "dashboard",
-          },
-        },
-      }
-
-      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
-      -- require("ibl").setup()
+      require "configs.indent_blankline"
     end,
   },
+  -- плагин используется для отслеживания времени, проведенного за написанием кода в
+  -- редакторе Vim или Neovim
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/wakatime/vim-wakatime
   {
     "wakatime/vim-wakatime",
     event = "VeryLazy",
-  },
-  {
-    -- https://github.com/LunarVim/bigfile.nvim
-    "LunarVim/bigfile.nvim",
-    event = "BufReadPre",
-    opts = {
-      filesize = 2, -- размер файла в MiB, плагин округляет размеры файлов до ближайшего MiB
-    },
-    config = function(_, opts)
-      require("bigfile").setup(opts)
+    config = function()
+      require "configs.wakatime"
     end,
   },
-  -- nx.nvim — расширение NX для nvim
-  -- подробнее смотри: https://github.com/Equilibris/nx.nvim
+  -- плагин используется для управления большими файлами в Neovim.
+  -- ПРИМИЧАНИЕ: подробно смотри: -- https://github.com/LunarVim/bigfile.nvim
+  {
+    "LunarVim/bigfile.nvim",
+    event = "BufReadPre",
+    config = function()
+      require "configs.bigfile"
+    end,
+  },
+  -- плагин предназначен для работы с инструментом Nx, который используется
+  -- для разработки и управления монорепозиториями в JavaScript/TypeScript проектах.
+  -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/Equilibris/nx.nvim
   {
     "Equilibris/nx.nvim",
     requires = {
       "nvim-telescope/telescope.nvim",
     },
     config = function()
-      require("nx").setup {
-        -- Базовая команда для запуска всех остальных команд nx, некоторые другие значения могут быть:
-        -- - `npm nx`
-        -- - `yarn nx`
-        -- - `pnpm nx`
-        nx_cmd_root = "nx",
-
-        -- Возможности запуска команд,
-        -- более подробную информацию смотрите в разделе nx.m.command-runners
-        command_runner = require("nx.command-runners").terminal_cmd(),
-
-        -- Возможности визуализации форм,
-        -- более подробную информацию смотрите в разделе Средства визуализации форм nx.m.
-        form_renderer = require("nx.form-renderers").telescope(),
-
-        -- Загружать или не загружать конфигурацию nx,
-        -- более подробную информацию смотрите в разделе nx.loading-and-reloading
-        read_init = true,
-      }
+      require "configs.nx" -- замените на путь к вашему конфигурационному файлу
     end,
   },
 }
