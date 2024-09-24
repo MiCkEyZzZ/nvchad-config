@@ -1,7 +1,15 @@
 # Конфигурация Nvchad версии 2.5
 
 <p align="center">
+  <img src="images/img-4.png">
+</p>
+</br>
+<p align="center">
   <img src="images/img-1.png">
+</p>
+</br>
+<p align="center">
+  <img src="images/img-3.png">
 </p>
 </br>
 
