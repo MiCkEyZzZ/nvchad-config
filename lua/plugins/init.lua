@@ -108,6 +108,8 @@ return {
         "mypy",
         "ruff",
         "black",
+        "marksman",
+        "gofumpt",
       },
     },
   },
@@ -150,7 +152,7 @@ return {
       require "configs.better-escape"
     end,
   },
-  -- Hop - это плагин, похожий на EasyMotion, который позволяет вам переходить в любое
+  -- плагин, похожий на EasyMotion, который позволяет вам переходить в любое
   -- место документа
   -- с минимальным количеством нажатий клавиш.
   -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/phaazon/hop.nvim
@@ -349,7 +351,8 @@ return {
       require "configs.carbon-now"
     end,
   },
-  -- невероятно быстрая и простая в настройке строка состояния Neovim, написанная на Lua.
+  -- невероятно быстрая и простая в настройке строка состояния
+  -- Neovim, написанная на Lua.
   -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/nvim-lualine/lualine.nvim
   {
     "nvim-lualine/lualine.nvim",
@@ -395,12 +398,8 @@ return {
     build = function()
       vim.fn["mkdp#util#install"]() -- Установка необходимых зависимостей для плагина
     end,
-    init = function()
-      vim.g.mkdp_theme = "dark" -- Установка темы предпросмотра на тёмную
-      vim.g.mkdp_auto_start = 0 -- Отключить автозапуск предпросмотра
-      vim.g.mkdp_auto_close = 1 -- Автоматическое закрытие при переключении буфера
-      vim.g.mkdp_refresh_slow = 1 -- Более медленное обновление для производительности
-      vim.g.mkdp_page_title = "${name} — Markdown Preview" -- Кастомизация заголовка страницы
+    config = function()
+      require "configs.markdown_preview" -- Подключение конфигурации из файла
     end,
   },
   -- простая и быстрая полоса прокрутки для Neovim. Она намеренно лишена

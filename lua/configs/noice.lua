@@ -1,5 +1,4 @@
 local present, noice = pcall(require, "noice")
-
 if not present then
   print "Не удалось загрузить noice.nvim"
   return
@@ -12,19 +11,21 @@ noice.setup {
       ["vim.lsp.util.stylize_markdown"] = true,
       ["cmp.entry.get_documentation"] = true, -- требуется hrsh7th/nvim-cmp
     },
-    hover = { enabled = false }, -- Отключаем отображение hover
-    signature = { enabled = false }, -- Отключаем отображение подписи
+    hover = { enabled = false }, -- Отключаем hover
+    signature = { enabled = false }, -- Отключаем подписи
+    message = { enabled = true }, -- Включаем обработку сообщений LSP
+    documentHighlight = { enabled = false }, -- Отключаем `documentHighlight`
   },
   presets = {
-    bottom_search = true, -- Используем классическую нижнюю строку команды для поиска
-    command_palette = true, -- Располагаем командную строку и всплывающее меню вместе
-    long_message_to_split = true, -- Длинные сообщения будут отправлены в разделенный
-    inc_rename = false, -- Включает диалоговое окно ввода для inc-rename.nvim
-    lsp_doc_border = false, -- Добавьте рамку для наведения курсора мыши на документы и справку о подписи
+    bottom_search = true, -- Нижняя строка поиска
+    command_palette = true, -- Командная строка и меню
+    long_message_to_split = true, -- Длинные сообщения в разделённом окне
+    inc_rename = false, -- Отключаем диалоговое окно ввода для inc-rename
+    lsp_doc_border = false, -- Без рамки для документации
   },
 }
 
--- (Необязательно) Настройка уведомлений
+-- Необязательно: можете также обрабатывать другие уведомления или сообщения:
 -- vim.notify = require("noice").notify
 -- vim.lsp.handlers["textDocument/hover"] = require("noice").hover
 -- vim.lsp.handlers["textDocument/signatureHelp"] = require("noice").signature

@@ -1,7 +1,6 @@
 local configs = require "nvchad.configs.lspconfig"
 local lspconfig = require "lspconfig"
 
--- Определяем функции для управления поведением LSP
 local on_attach = configs.on_attach
 local capabilities = configs.capabilities
 
@@ -34,45 +33,29 @@ end
 
 -- Перебираем языковые серверы и настраиваем их
 for _, lsp in ipairs(servers) do
-  local settings = {}
-
-  -- Специфические настройки для некоторых серверов
-  if lsp == "gopls" then
-    settings = {
-      gopls = {
-        experimentalPostfixCompletions = true,
-        analyses = {
-          unusedparams = true,
-          shadow = true,
-        },
-        staticcheck = true,
-      },
-    }
-  elseif lsp == "tsserver" then
-    settings = {
-      tsserver = {
-        preferences = {
-          importModuleSpecifierPreference = "none-relative",
-        },
-      },
-    }
-  end
-
-  -- Настройка LSP сервера
   lspconfig[lsp].setup {
     on_attach = function(client, bufnr)
-      on_attach(client, bufnr) -- Подключение пользовательских функций на прикрепление
-      require("nvim_lsp_signature").setup() -- Подключение для подписи LSP
+      on_attach(client, bufnr) -- Вызов вашей функции on_attach
+      if client.name == "gopls" then
+        client.server_capabilities.documentHighlightProvider = false
+      end
     end,
     capabilities = capabilities,
-    settings = settings,
-    commands = lsp == "tsserver"
-        and {
-          OrganizeImports = {
-            organize_imports,
-            description = "Организация импорта", -- Описание команды
-          },
-        }
-      or nil,
+    commands = {
+      OrganizeImports = {
+        organize_imports,
+        description = "Organize Imports",
+      },
+    },
+    settings = {
+      gopls = {
+        completeUnimported = true,
+        usePlaceholders = true,
+        analyses = {
+          unusedparams = true,
+        },
+      },
+    },
   }
+  lspconfig.prismals.setup {}
 end
