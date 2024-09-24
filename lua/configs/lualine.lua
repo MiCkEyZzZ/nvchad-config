@@ -1,12 +1,14 @@
 local present, lualine = pcall(require, "lualine")
 
+-- Проверяем, установлен ли lualine
 if not present then
   return
 end
 
+-- Определяем цвета для статусной строки
 local colors = {
-  bg = "#202328",
-  fg = "#bbc2cf",
+  bg = "#202328", -- Цвет фона
+  fg = "#bbc2cf", -- Цвет текста
   yellow = "#ECBE7B",
   cyan = "#008080",
   darkblue = "#081633",
@@ -18,12 +20,13 @@ local colors = {
   red = "#ec5f67",
 }
 
+-- Условия для отображения компонентов
 local conditions = {
   buffer_not_empty = function()
-    return vim.fn.empty(vim.fn.expand "%:t") ~= 1
+    return vim.fn.empty(vim.fn.expand "%:t") ~= 1 -- Проверяем, что буфер не пустой
   end,
   hide_in_width = function()
-    return vim.fn.winwidth(0) > 80
+    return vim.fn.winwidth(0) > 80 -- Скрываем в узких окнах
   end,
   check_git_workspace = function()
     local filepath = vim.fn.expand "%:p:h"
@@ -32,66 +35,60 @@ local conditions = {
   end,
 }
 
--- Config
+-- Конфигурация lualine
 local config = {
   options = {
-    -- Disable sections and component separators
-    component_separators = "",
-    section_separators = "",
+    component_separators = "", -- Убираем разделители между компонентами
+    section_separators = "", -- Убираем разделители между секциями
     theme = {
-      -- We are going to use lualine_c an lualine_x as left and
-      -- right section. Both are highlighted by c theme .  So we
-      -- are just setting default looks o statusline
-      normal = { c = { fg = colors.fg, bg = colors.bg } },
-      inactive = { c = { fg = colors.fg, bg = colors.bg } },
+      normal = { c = { fg = colors.fg, bg = colors.bg } }, -- Цвета для нормального состояния
+      inactive = { c = { fg = colors.fg, bg = colors.bg } }, -- Цвета для неактивного состояния
     },
   },
   sections = {
-    -- these are to remove the defaults
-    lualine_a = {},
-    lualine_b = {},
-    lualine_y = {},
-    lualine_z = {},
-    -- These will be filled later
-    lualine_c = {},
-    lualine_x = {},
+    lualine_a = {}, -- Секция A (можно добавить компоненты)
+    lualine_b = {}, -- Секция B (можно добавить компоненты)
+    lualine_y = {}, -- Секция Y (можно добавить компоненты)
+    lualine_z = {}, -- Секция Z (можно добавить компоненты)
+    lualine_c = {}, -- Секция C (будет заполнена позже)
+    lualine_x = {}, -- Секция X (будет заполнена позже)
   },
   inactive_sections = {
-    -- these are to remove the defaults
-    lualine_a = {},
-    lualine_b = {},
-    lualine_y = {},
-    lualine_z = {},
-    lualine_c = {},
-    lualine_x = {},
+    lualine_a = {}, -- Неактивная секция A
+    lualine_b = {}, -- Неактивная секция B
+    lualine_y = {}, -- Неактивная секция Y
+    lualine_z = {}, -- Неактивная секция Z
+    lualine_c = {}, -- Неактивная секция C
+    lualine_x = {}, -- Неактивная секция X
   },
 }
 
--- Inserts a component in lualine_c at left section
+-- Функция для добавления компонентов в секцию C
 local function ins_left(component)
   table.insert(config.sections.lualine_c, component)
 end
 
--- Inserts a component in lualine_x at right section
+-- Функция для добавления компонентов в секцию X
 local function ins_right(component)
   table.insert(config.sections.lualine_x, component)
 end
 
+-- Добавляем визуальный элемент в начало статусной строки
 ins_left {
   function()
     return "▊"
   end,
-  color = { fg = colors.blue }, -- Sets highlighting of component
-  padding = { left = 0, right = 1 }, -- We don't need space before this
+  color = { fg = colors.blue }, -- Устанавливаем цвет
+  padding = { left = 0, right = 1 }, -- Убираем пробел перед элементом
 }
 
+-- Добавляем компонент режима
 ins_left {
-  -- mode component
   function()
-    return ""
+    return "" -- Иконка для режима
   end,
   color = function()
-    -- auto change color according to neovims mode
+    -- Автоматически меняем цвет в зависимости от режима Neovim
     local mode_color = {
       n = colors.red,
       i = colors.green,
@@ -114,107 +111,109 @@ ins_left {
       ["!"] = colors.red,
       t = colors.red,
     }
-    return { fg = mode_color[vim.fn.mode()] }
+    return { fg = mode_color[vim.fn.mode()] } -- Возвращаем цвет для текущего режима
   end,
   padding = { right = 1 },
 }
 
+-- Добавляем компонент размера файла
 ins_left {
-  -- filesize component
   "filesize",
-  cond = conditions.buffer_not_empty,
+  cond = conditions.buffer_not_empty, -- Условие для отображения
 }
 
+-- Добавляем компонент имени файла
 ins_left {
   "filename",
-  cond = conditions.buffer_not_empty,
-  color = { fg = colors.magenta, gui = "bold" },
+  cond = conditions.buffer_not_empty, -- Условие для отображения
+  color = { fg = colors.magenta, gui = "bold" }, -- Устанавливаем цвет и стиль
 }
 
+-- Добавляем компонент для отображения позиции курсора
 ins_left { "location" }
 
+-- Добавляем компонент для отображения прогресса
 ins_left { "progress", color = { fg = colors.fg, gui = "bold" } }
 
+-- Добавляем компонент для диагностики
 ins_left {
   "diagnostics",
-  sources = { "nvim_diagnostic" },
-  symbols = { error = " ", warn = " ", info = " " },
+  sources = { "nvim_diagnostic" }, -- Источник диагностики
+  symbols = { error = " ", warn = " ", info = " " }, -- Символы для диагностики
   diagnostics_color = {
-    error = { fg = colors.red },
-    warn = { fg = colors.yellow },
-    info = { fg = colors.cyan },
+    error = { fg = colors.red }, -- Цвет ошибок
+    warn = { fg = colors.yellow }, -- Цвет предупреждений
+    info = { fg = colors.cyan }, -- Цвет информации
   },
 }
 
--- Insert mid section. You can make any number of sections in neovim :)
--- for lualine it's any number greater then 2
+-- Вставляем пустую секцию
 ins_left {
   function()
     return "%="
   end,
 }
 
+-- Добавляем компонент для отображения активного LSP
 ins_left {
-  -- Lsp server name .
   function()
-    local msg = "No Active Lsp"
-    local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
-    local clients = vim.lsp.get_active_clients()
+    local msg = "No Active Lsp" -- Сообщение, если LSP не активен
+    local buf_ft = vim.api.nvim_buf_get_option(0, "filetype") -- Получаем тип файла
+    local clients = vim.lsp.get_active_clients() -- Получаем активные LSP-клиенты
     if next(clients) == nil then
-      return msg
+      return msg -- Если нет клиентов, возвращаем сообщение
     end
     for _, client in ipairs(clients) do
-      local filetypes = client.config.filetypes
+      local filetypes = client.config.filetypes -- Получаем поддерживаемые типы файлов
       if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-        return client.name
+        return client.name -- Возвращаем имя активного LSP
       end
     end
-    return msg
+    return msg -- Возвращаем сообщение, если LSP не активен
   end,
-  icon = " LSP:",
-  color = { fg = "#ffffff", gui = "bold" },
+  icon = " LSP:", -- Иконка для LSP
+  color = { fg = "#ffffff", gui = "bold" }, -- Цвет и стиль
 }
 
--- Add components to right sections
+-- Добавляем компоненты в правую секцию
 ins_right {
-  "o:encoding", -- option component same as &encoding in viml
-  fmt = string.upper, -- I'm not sure why it's upper case either ;)
-  cond = conditions.hide_in_width,
-  color = { fg = colors.green, gui = "bold" },
-}
-
-ins_right {
-  "fileformat",
-  fmt = string.upper,
-  icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-  color = { fg = colors.green, gui = "bold" },
+  "o:encoding", -- Компонент для отображения кодировки
+  fmt = string.upper, -- Приводим к верхнему регистру
+  cond = conditions.hide_in_width, -- Условие для отображения
+  color = { fg = colors.green, gui = "bold" }, -- Устанавливаем цвет и стиль
 }
 
 ins_right {
-  "branch",
-  icon = "",
-  color = { fg = colors.violet, gui = "bold" },
+  "fileformat", -- Компонент для отображения формата файла
+  fmt = string.upper, -- Приводим к верхнему регистру
+  icons_enabled = false, -- Отключаем иконки
+  color = { fg = colors.green, gui = "bold" }, -- Устанавливаем цвет и стиль
 }
 
 ins_right {
-  "diff",
-  -- Is it me or the symbol for modified us really weird
-  symbols = { added = " ", modified = "󰝤 ", removed = " " },
+  "branch", -- Компонент для отображения текущей ветки git
+  icon = "", -- Иконка для ветки
+  color = { fg = colors.violet, gui = "bold" }, -- Устанавливаем цвет и стиль
+}
+
+ins_right {
+  "diff", -- Компонент для отображения различий
+  symbols = { added = " ", modified = "󰝤 ", removed = " " }, -- Компонент для отображения различий
   diff_color = {
-    added = { fg = colors.green },
-    modified = { fg = colors.orange },
-    removed = { fg = colors.red },
+    added = { fg = colors.green }, -- Цвет для добавленных файлов
+    modified = { fg = colors.orange }, -- Цвет для измененных файлов
+    removed = { fg = colors.red }, -- Цвет для удаленных файлов
   },
-  cond = conditions.hide_in_width,
+  cond = conditions.hide_in_width, -- Условие для отображения
 }
 
 ins_right {
   function()
     return "▊"
   end,
-  color = { fg = colors.blue },
-  padding = { left = 1 },
+  color = { fg = colors.blue }, -- Устанавливаем цвет
+  padding = { left = 1 }, -- Добавляем отступ
 }
 
--- Now don't forget to initialize lualine
+-- Инициализируем lualine с заданной конфигурацией
 lualine.setup(config)

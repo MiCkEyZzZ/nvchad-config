@@ -371,6 +371,7 @@ return {
       require "configs.lsp_signature"
     end,
   },
+  { "onsails/lspkind.nvim" },
   -- автодополнения с выбором элементов с помощью стрелок
   -- ПРИМИЧАНИЕ: подробности: https://github.com/hrsh7th/nvim-cmp
   {
@@ -586,55 +587,11 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v2.x",
     dependencies = {
-      "nvim-lua/plenary.nvim", -- Зависимость
+      "nvim-lua/plenary.nvim", --Требуется для работы neo-tree
       "nvim-tree/nvim-web-devicons", -- Иконки для файлов
     },
     config = function()
-      require("neo-tree").setup {
-        close_if_last_window = true, -- Закрывать, если это последнее окно
-        popup_border_style = "rounded", -- Стиль границы всплывающих окон
-        enable_git_status = true, -- Включить статус git
-        enable_diagnostics = true, -- Включить диагностику
-        default_component_configs = {
-          name = {
-            use_git_status_colors = true, -- Использовать цвета статусов git
-          },
-          git_status = {
-            symbols = {
-              -- Внешний вид символов статусов
-              added = "✚", -- Добавленные файлы
-              modified = "✏️", -- Измененные файлы
-              deleted = "✖️", -- Удаленные файлы
-              renamed = "➜", -- Переименованные файлы
-              untracked = "★", -- Неотслеживаемые файлы
-              ignored = "☒", -- Игнорируемые файлы
-              -- и т.д.
-            },
-          },
-        },
-        window = {
-          position = "left", -- Позиция окна (left, right, top, bottom)
-          width = 30, -- Ширина окна
-          mappings = {
-            ["<space>"] = "toggle_node", -- Переключение узлов
-            ["<cr>"] = "open", -- Открытие файла или папки
-            ["<bs>"] = "close_node", -- Закрытие узлов
-            ["<leader>r"] = "refresh", -- Обновление дерева
-            -- Добавьте свои сочетания клавиш здесь
-          },
-        },
-        filesystem = {
-          filtered_items = {
-            hide_dotfiles = true, -- Скрыть файлы с точкой
-            hide_gitignored = true, -- Скрыть игнорируемые git файлы
-          },
-          follow_current_file = true, -- Следить за текущим файлом
-          group_empty_dirs = true, -- Группировка пустых директорий
-        },
-      }
-
-      -- Привязка клавиш для открытия/закрытия neo-tree
-      vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { noremap = true, silent = true })
+      require "configs.neo-tree" -- Подключаем файл конфигурации
     end,
   },
   -- умный и мощный плагин для комментирования для neovim
