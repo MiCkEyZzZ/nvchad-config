@@ -14,6 +14,7 @@ neotest.setup {
       cwd = function()
         return vim.fn.getcwd()
       end,
+      -- Добавьте дополнительные опции здесь, если это необходимо
     },
   },
 }

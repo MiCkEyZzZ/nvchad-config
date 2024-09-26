@@ -1,3 +1,4 @@
+-- Группировка плагинов
 return {
   -- лёгкий, но мощный модуль форматирования для Neovim.
   -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/prettier/vim-prettier
@@ -8,7 +9,12 @@ return {
       require "configs.conform"
     end,
   },
-
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    config = function()
+      require("nvim-dap-virtual-text").setup {}
+    end,
+  },
   -- tmux плагин позволит легко перемещаться между разделениями vim и tmux
   -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/christoomey/vim-tmux-navigator
   {
@@ -34,13 +40,13 @@ return {
   -- плагин для Neovim, который предоставляет визуальные индикаторы изменений
   -- в коде
   -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/stevearc/dressing.nvim
-  {
-    "lewis6991/gitsigns.nvim",
-    event = "BufReadPost",
-    config = function()
-      require "configs.gitsigns"
-    end,
-  },
+  --{
+  --"lewis6991/gitsigns.nvim",
+  -- event = "BufReadPost",
+  --config = function()
+  --require "configs.gitsigns"
+  --end,
+  --},
   -- плагин предназначена для настройки языковых серверов в Neovim, что позволяет
   -- улучшить
   -- опыт разработки за счет интеграции функций Language Server Protocol (LSP)
@@ -98,8 +104,9 @@ return {
         "clang-format",
         "gopls",
         "js-debug-adapter",
-        "typescript-language-server",
+        "ts_ls",
         "dockerls",
+        "prismals",
         "yamlls",
         "jsonls",
         "marksman",
@@ -195,24 +202,30 @@ return {
     "mg979/vim-visual-multi",
     event = "BufReadPost",
     init = function()
-      require "configs.visual-multi"
+      -- Настройки для vim-visual-multi через глобальные переменные
+      vim.g.VM_show_warnings = 0 -- Отключить предупреждения
+      vim.g.VM_default_mappings = 0 -- Отключить стандартные сопоставления
+      vim.g.VM_maps = {
+        ["Find Under"] = "gb", -- Найти подстроку
+        ["Find Subword Under"] = "gB", -- Найти подслово
+      }
     end,
   },
   -- фреймворк для взаимодействия с тестами в рамках NeoVim.
   -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/nvim-neotest/neotest
-  {
-    "nvim-neotest/neotest",
-    event = "VeryLazy",
-    config = function()
-      require "configs.neotest"
-    end,
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-      "antoinemadec/FixCursorHold.nvim",
-      "haydenmeade/neotest-jest",
-    },
-  },
+  --{
+  --"nvim-neotest/neotest",
+  --event = "VeryLazy",
+  --config = function()
+  -- require "configs.neotest"
+  --end,
+  --dependencies = {
+  --"nvim-lua/plenary.nvim",
+  --"nvim-treesitter/nvim-treesitter",
+  --"antoinemadec/FixCursorHold.nvim",
+  --"haydenmeade/neotest-jest",
+  --},
+  --},
   -- настройка DAP для нативного дебаггера
   -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/mfussenegger/nvim-dap
   {
@@ -371,6 +384,8 @@ return {
       require "configs.lsp_signature"
     end,
   },
+  -- плагин добавляет пиктограммы, похожие на vscode, во встроенный lsp neovim
+  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/onsails/lspkind.nvim
   { "onsails/lspkind.nvim" },
   -- автодополнения с выбором элементов с помощью стрелок
   -- ПРИМИЧАНИЕ: подробности: https://github.com/hrsh7th/nvim-cmp
@@ -391,7 +406,7 @@ return {
   },
   -- предварительный просмотр Markdown в вашем современном браузере
   -- с синхронизированной прокруткой и гибкой настройкой.
-  -- подробности: https://github.com/iamcco/markdown-preview.nvim
+  -- ПРИМИЧАНИЕ: подробности: https://github.com/iamcco/markdown-preview.nvim
   {
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreview", "MarkdownPreviewStop" },
@@ -491,9 +506,6 @@ return {
   {
     "wakatime/vim-wakatime",
     event = "VeryLazy",
-    config = function()
-      require "configs.wakatime"
-    end,
   },
   -- плагин используется для управления большими файлами в Neovim.
   -- ПРИМИЧАНИЕ: подробно смотри: -- https://github.com/LunarVim/bigfile.nvim
@@ -536,88 +548,18 @@ return {
   -- плагин, который показывает доступные команды и их комбинации, что может
   -- помочь в изучении сочетаний клавиш.
   -- ПРИМИЧАНИЕ: подробнее смотри: https://github.com/folke/which-key.nvim
-  {
-    "folke/which-key.nvim",
-    config = function()
-      require("which-key").setup {
-        -- Настройки по умолчанию
-        plugins = {
-          marks = true, -- показывать закладки
-          registers = true, -- показывать регистры
-          spelling = {
-            enabled = true, -- показывать исправления для опечаток
-            suggestions = 20, -- количество предложений
-          },
-        },
-        key_labels = {}, -- можете изменить метки клавиш
-        icons = {
-          breadcrumb = "»", -- иконка для "хлебных крошек"
-          separator = "➜", -- иконка для разделителей
-          group = "+", -- иконка для групп
-        },
-        window = {
-          border = "rounded", -- стиль границы окна
-          position = "bottom", -- положение окна (bottom, top, left, right)
-          margin = { 1, 2, 1, 2 }, -- отступы
-          padding = { 2, 2, 2, 2 }, -- внутренние отступы
-        },
-        layout = {
-          height = { min = 4, max = 25 }, -- высота окна
-          width = { min = 20, max = 50 }, -- ширина окна
-          spacing = 3, -- расстояние между элементами
-        },
-        ignore_missing = false, -- игнорировать отсутствующие клавиши
-        show_help = true, -- показывать помощь по сочетаниям клавиш
-      }
-
-      -- Пример настройки пользовательских сочетаний клавиш
-      local wk = require "which-key"
-      wk.register({
-        ["<leader>f"] = { name = "File", f = "Find file", r = "Refresh file", s = "Save file" },
-        ["<leader>g"] = { name = "Git", s = "Status", c = "Commit", p = "Push" },
-        ["<leader>w"] = { name = "Window", h = "Split left", j = "Split below", k = "Close window" },
-      }, { prefix = "<leader>" })
-    end,
-  },
-  -- плагин Neovim для просмотра файловой системы и других древовидных структур
-  -- в любом удобном для вас стиле, включая боковые панели, плавающие окна,
-  -- разделенный стиль netrw или все сразу!
-  -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/nvim-neo-tree/neo-tree.nvim
-  {
-    "nvim-neo-tree/neo-tree.nvim",
-    branch = "v2.x",
-    dependencies = {
-      "nvim-lua/plenary.nvim", --Требуется для работы neo-tree
-      "nvim-tree/nvim-web-devicons", -- Иконки для файлов
-    },
-    config = function()
-      require "configs.neo-tree" -- Подключаем файл конфигурации
-    end,
-  },
+  --{
+  --"folke/which-key.nvim",
+  --config = function()
+  --require "configs.which-key"
+  --end,
+  --},
   -- умный и мощный плагин для комментирования для neovim
   -- ПРИМИЧАНИЕ: подробно смотри: https://github.com/numToStr/Comment.nvim
   {
     "numToStr/Comment.nvim",
     config = function()
-      require("Comment").setup {
-        -- Опции по умолчанию
-        mappings = {
-          -- Используйте <leader>c для комментирования и <leader>u для раскомментирования
-          basic = true, -- Включение базовых сочетаний клавиш
-          extra = true, -- Включение дополнительных сочетаний клавиш
-        },
-        pre_hook = function(ctx)
-          local U = require "Comment.utils"
-
-          -- Определяем, что делать в зависимости от типа контекста
-          if ctx.ctype == U.ctype.block then
-            return "--[[", "--]]" -- Использование блочных комментариев
-          else
-            return "--", "" -- Использование однострочных комментариев
-          end
-        end,
-        post_hook = nil, -- Вы можете добавить функцию для выполнения после комментирования
-      }
+      require "configs.comment"
     end,
   },
 }

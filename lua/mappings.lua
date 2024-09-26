@@ -15,7 +15,7 @@ end, { desc = "Закрыть Все буферы" })
 map("n", "<leader>ft", "<cmd>TodoTelescope<CR>", { desc = "Найти Задача" })
 
 -- Управление окнами
-map("n", "\\", "<cmd>:vsplit <CR>", { desc = "Вертикальный Разделение" })
+map("n", "\\", "<cmd>:vsplit <CR>", { desc = "Вертикальное Разделение" })
 
 -- Прокрутка через tmux
 map("n", "<c-l>", "<cmd>:TmuxNavigateRight<cr>", { desc = "Tmux Вправо" })
@@ -68,9 +68,12 @@ map(
   ":Neotest output<CR>",
   { desc = "Показать Результаты тестирования" }
 )
-map("n", "<leader>ts", ":Neotest summary<CR>", {
-  desc = "Показать Сводка результатов тестирования",
-})
+map(
+  "n",
+  "<leader>ts",
+  ":Neotest summary<CR>",
+  { desc = "Показать Сводка результатов тестирования" }
+)
 
 -- Debug
 map("n", "<leader>du", function()
@@ -98,9 +101,7 @@ map("n", "<C-]>", function()
 end, { desc = "Переключение Вертикальный терминал" })
 map("n", "<C-\\>", function()
   require("nvchad.term").toggle { pos = "sp", size = 0.3 }
-end, {
-  desc = "Переключение Горизонтальный терминал",
-})
+end, { desc = "Переключение Горизонтальный терминал" })
 map("n", "<C-f>", function()
   require("nvchad.term").toggle { pos = "float" }
 end, { desc = "Переключение плавающего терминала" })
@@ -109,9 +110,7 @@ map("t", "<C-]>", function()
 end, { desc = "Переключение Вертикальный терминал" })
 map("t", "<C-\\>", function()
   require("nvchad.term").toggle { pos = "sp" }
-end, {
-  desc = "Переключение Горизонтальный терминал",
-})
+end, { desc = "Переключение Горизонтальный терминал" })
 map("t", "<C-f>", function()
   require("nvchad.term").toggle { pos = "float" }
 end, { desc = "Переключение плавающего терминала" })
@@ -122,6 +121,26 @@ map("i", "<C-g>", function()
   return vim.fn["codeium#Accept"]()
 end, { expr = true, desc = "Принять предложение Codeium" })
 
--- mapping for Markdown Preview
+-- Markdown Preview
 map("n", "<leader>mp", "<CMD> MarkdownPreview<CR>", { desc = "Открыть предпросмотр" })
 map("n", "<leader>mc", "<CMD> MarkdownPreviewStop<CR>", { desc = "Закрыть предпросмотр" })
+
+-- Комментирование и раскомментирование с помощью Comment.nvim
+map("n", "<leader>c", function()
+  require("Comment.api").toggle.linewise.current()
+end, { desc = "Закомментировать текущую строку" })
+map("x", "<leader>c", function()
+  require("Comment.api").toggle.linewise(vim.fn.visualmode())
+end, { desc = "Закомментировать выделенное" })
+
+-- Ctrl+n для открытия NvimTree
+map("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "Открыть NvimTree" })
+
+-- Мышь для перетаскивания вкладок
+vim.opt.mouse = "a"
+
+-- Выделение с Shift и стрелками
+vim.api.nvim_set_keymap("n", "<S-Up>", "v<Up>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<S-Down>", "v<Down>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<S-Left>", "v<Left>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<S-Right>", "v<Right>", { noremap = true, silent = true })

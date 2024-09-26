@@ -19,25 +19,15 @@ trouble.setup {
     information = "", -- Иконка для информационных сообщений
     other = "﫠", -- Иконка для других сообщений
   },
-  override = {
-    zsh = { -- Переопределение иконок и цветов для файлов .zsh
-      icon = "",
-      color = "#428850",
-      cterm_color = "65",
-      name = "Zsh",
-    },
-  },
-  color_icons = true, -- Включение цветных иконок
-  default = false, -- Использовать значения по умолчанию
-  strict = true, -- Строгий режим
-  override_by_filename = { -- Переопределение по имени файла
+  -- Переопределение иконок и цветов для файлов
+  override_by_filename = {
     [".gitignore"] = {
       icon = "",
       color = "#f1502f",
       name = "Gitignore",
     },
   },
-  override_by_extension = { -- Переопределение по расширению файла
+  override_by_extension = {
     ["log"] = {
       icon = "",
       color = "#81e043",
@@ -59,4 +49,23 @@ trouble.setup {
       name = "JSON",
     },
   },
+  color_icons = true, -- Включение цветных иконок
+  default = false, -- Использовать значения по умолчанию
+  strict = true, -- Строгий режим
 }
+
+-- Привязка горячих клавиш для открытия Trouble
+vim.keymap.set("n", "<leader>xx", trouble.open, { desc = "Open Trouble" })
+vim.keymap.set(
+  "n",
+  "<leader>xw",
+  trouble.open_with_workspace_diagnostics,
+  { desc = "Open Trouble with workspace diagnostics" }
+)
+vim.keymap.set(
+  "n",
+  "<leader>xd",
+  trouble.open_with_document_diagnostics,
+  { desc = "Open Trouble with document diagnostics" }
+)
+vim.keymap.set("n", "<leader>xq", trouble.close, { desc = "Close Trouble" })

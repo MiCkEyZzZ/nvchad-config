@@ -66,7 +66,7 @@ vim.keymap.set("n", "zr", ufo.openFoldsExceptKinds)
 vim.keymap.set("n", "zK", function()
   local winid = ufo.peekFoldedLinesUnderCursor()
   if not winid then
-    vim.cmd [[ Lspsaga hover_doc ]]
+    vim.cmd [[Lspsaga hover_doc]] -- Убедитесь, что у вас установлен Lspsaga
   end
 end)
 

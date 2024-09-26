@@ -1,6 +1,13 @@
 -- Установка глобальных переменных
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/nvchad/base46/"
 vim.g.mapleader = " "
+vim.o.mouse = "a"
+
+-- Активируем провайдеры
+vim.g.loaded_node_provider = 1
+vim.g.loaded_perl_provider = 1
+vim.g.loaded_python3_provider = 1
+vim.g.loaded_ruby_provider = 1
 
 local opt = vim.opt
 

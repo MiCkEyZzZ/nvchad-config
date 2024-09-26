@@ -23,8 +23,11 @@ M.treesitter = {
     "proto",
     "json",
     "yaml",
-    "proto",
     "rust",
+  },
+  highlight = {
+    enable = true, -- Включаем подсветку
+    additional_vim_regex_highlighting = false, -- Отключаем дополнительную регекс-подсветку
   },
   textobjects = {
     select = {
@@ -43,14 +46,17 @@ M.treesitter = {
       set_jumps = true,
       goto_next_start = {
         ["]]"] = "@function.outer",
+        ["]c"] = "@class.outer", -- Добавил возможность перехода к следующему классу
       },
       goto_previous_start = {
         ["[["] = "@function.outer",
+        ["[c"] = "@class.outer", -- Добавил возможность перехода к предыдущему классу
       },
     },
   },
   indent = {
     enable = true,
+    disable = { "yaml" }, -- Выключаем автоиндентацию для YAML, если нужно
   },
 }
 
@@ -80,12 +86,11 @@ M.mason = {
   },
 }
 
--- поддержка git в nvimtree
+-- Поддержка git в nvimtree
 M.nvimtree = {
   git = {
     enable = true,
   },
-
   renderer = {
     highlight_git = true,
     icons = {
@@ -93,10 +98,16 @@ M.nvimtree = {
         git = true,
       },
     },
-    special_files = { "README.md", "Makefile", "MAKEFILE", "Cargo.toml", "build.gradle" }, -- Список специальных файлов, которые всегда находятся наверху
+    special_files = {
+      "README.md",
+      "Makefile",
+      "MAKEFILE",
+      "Cargo.toml",
+      "build.gradle",
+    }, -- Список специальных файлов, которые всегда находятся наверху
   },
   view = {
-    adaptive_size = true, -- изменяет размер окна в зависимости от количества файлов
+    adaptive_size = true, -- Изменяет размер окна в зависимости от количества файлов
   },
 }
 

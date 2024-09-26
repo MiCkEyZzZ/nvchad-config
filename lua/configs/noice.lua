@@ -1,37 +1,37 @@
 local present, noice = pcall(require, "noice")
 if not present then
-  print "Не удалось загрузить noice.nvim"
+  print("Не удалось загрузить noice.nvim: " .. tostring(noice))
   return
 end
 
 noice.setup {
   lsp = {
     override = {
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true, -- Конвертация ввода в Markdown
-      ["vim.lsp.util.stylize_markdown"] = true, -- Стилизация Markdown
-      ["cmp.entry.get_documentation"] = true, -- Поддержка nvim-cmp для документации
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true,
     },
     hover = { enabled = false }, -- Отключаем всплывающее окно с hover
     signature = { enabled = false }, -- Отключаем подписи
-    message = { enabled = true }, -- Включаем обработку сообщений LSP
-    documentHighlight = { enabled = false }, -- Отключаем выделение документов
+    message = { enabled = true },
+    documentHighlight = { enabled = false },
   },
   presets = {
-    bottom_search = true, -- Использование нижней строки для поиска
-    command_palette = true, -- Включение командной палитры
-    long_message_to_split = true, -- Длинные сообщения в разделённом окне
-    inc_rename = false, -- Отключение инкрементального переименования
-    lsp_doc_border = true, -- Добавление рамки для документации LSP
+    bottom_search = true,
+    command_palette = true,
+    long_message_to_split = true,
+    inc_rename = false,
+    lsp_doc_border = true,
   },
   routes = {
     {
       filter = { event = "msg_show" },
-      opts = { skip = true }, -- Пропускать стандартные сообщения
+      opts = { skip = true },
     },
   },
 }
 
--- Необязательно: можете также обрабатывать другие уведомления или сообщения
--- vim.notify = require("noice").notify
--- vim.lsp.handlers["textDocument/hover"] = require("noice").hover
--- vim.lsp.handlers["textDocument/signatureHelp"] = require("noice").signature
+-- Обработка уведомлений и LSP
+vim.notify = noice.notify
+vim.lsp.handlers["textDocument/hover"] = noice.hover
+vim.lsp.handlers["textDocument/signatureHelp"] = noice.signature

@@ -1,7 +1,8 @@
 -- Проверяем наличие nvim-treesitter
 local status, treesitter = pcall(require, "nvim-treesitter.configs")
+
 if not status then
-  print "Не удалось загрузить nvim-treesitter"
+  vim.notify("Не удалось загрузить nvim-treesitter", vim.log.levels.ERROR)
   return
 end
 
@@ -23,7 +24,6 @@ treesitter.setup {
     "markdown",
     "rust",
     "proto",
-    "prisma",
     "sql",
     "toml",
     "ruby",
@@ -51,6 +51,29 @@ treesitter.setup {
   },
 }
 
+-- Получаем текущий тип файла
+local filetype = vim.bo.filetype
+
+-- Исключаем 'nvdash' из обработки
+if filetype == "nvdash" then
+  vim.notify(
+    "Парсер для файла с типом '" .. filetype .. "' не найден. Игнорируем.",
+    vim.log.levels.WARN
+  )
+  return
+end
+
+-- Проверяем наличие парсера для текущего типа файла
+local parser_exists = pcall(vim.treesitter.get_parser, 0, filetype)
+
+if not parser_exists then
+  vim.notify(
+    "Парсер для файла с типом '" .. filetype .. "' не найден.",
+    vim.log.levels.WARN
+  )
+  return
+end
+
 -- Настройка автотегов, если используется nvim-ts-autotag
 local present, autotag = pcall(require, "nvim-ts-autotag")
 if present then
@@ -59,5 +82,5 @@ if present then
     filetypes = { "html", "xml", "javascript", "typescript", "jsx", "tsx", "vue" }, -- Поддерживаемые типы файлов
   }
 else
-  print "Не удалось загрузить nvim-ts-autotag"
+  vim.notify("Не удалось загрузить nvim-ts-autotag", vim.log.levels.ERROR)
 end

@@ -6,14 +6,28 @@ if not present then
 end
 
 autotag.setup {
-  opts = {
-    enable_close = true, -- Автоматическое закрытие тегов
-    enable_rename = true, -- Автоматическое переименование пар тегов
-    enable_close_on_slash = false, -- Автоматическое закрытие при замыкании </
+  autotag = {
+    enable = true, -- Основной параметр для включения плагина
   },
-  per_filetype = {
-    ["html"] = {
-      enable_close = false, -- Отключение автозакрытия для HTML
-    },
+  filetypes = { -- Укажите, для каких типов файлов включить поддержку
+    "html",
+    "xml",
+    -- Добавьте другие необходимые типы файлов
+  },
+  skip_tags = { -- Укажите теги, которые нужно пропустить (опционально)
+    "area",
+    "base",
+    "br",
+    "col",
+    "command",
+    "embed",
+    "hr",
+    "img",
+    "slot",
+    "input",
+    "param",
+    "source",
+    "track",
+    "wbr",
   },
 }

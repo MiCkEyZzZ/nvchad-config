@@ -69,14 +69,14 @@ M.ui = {
       { "  Закладки", "Проб m a", "Telescope marks" },
       { "  Темы", "Проб t h", "Telescope themes" },
       { "  Управление", "Проб c h", "NvCheatsheet" },
-      { "⚙️  Настройки", "Проб s", ":e $MYVIMRC" }, -- Добавлена кнопка для быстрого доступа к настройкам
+      { "⚙️  Настройки", "Проб s", ":e $MYVIMRC" }, -- кнопка для быстрого доступа к настройкам
     },
   },
   -- просто/сетка
   cheatsheet = { theme = "grid" }, -- простая/сетка
 
   telescope = { style = "bordered" },
-  extended_integrations = { "notify", "dashboard", "lualine" }, -- добавлены новые инеграции
+  extended_integrations = { "notify", "dashboard", "lualine" }, -- новые инеграции
 
   hl_override = {
     Comment = { italic = true },
