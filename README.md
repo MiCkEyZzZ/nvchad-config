@@ -17,6 +17,8 @@
 
 - [ubuntu 24.04LTS](https://ubuntu.com/download/desktop)
 - [wrap](https://www.warp.dev/)
+- [nvim](https://github.com/neovim/neovim) v0.11.0-dev
+- [nvchad](https://nvchad.com/) v2.5
 
 ## Установка
 
@@ -25,6 +27,8 @@ git clone git@github.com:MiCkEyZzZ/nvchad-config.git
 ```
 
 ## Основные команды
+
+Здесь перечислены некоторые сочетания клавиш, которые я часто использую.
 
 | Команда                      | Действие                                             |
 | ---------------------------- | ---------------------------------------------------- |
@@ -49,6 +53,7 @@ git clone git@github.com:MiCkEyZzZ/nvchad-config.git
 | `<leader> + e`               | переход в Nvchad меню                                |
 | `<leader> -> m -> p`         | открыть предварительный просмотр Markdown в браузере |
 | `<leader> -> m -> c`         | закрыть предварительный просмотр Markdown в браузере |
+| `<leader> -> /`              | закомментировать/раскомментировать                   |
 | `← ↑ → ↓`                    | выбор пункта при всплывающей подсказке               |
 | `:GoCmt`                     | вставка комментария в текущей строке                 |
 | `:GoRmTag`                   | удаление тега в текущей строке                       |
